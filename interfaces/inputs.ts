@@ -10,3 +10,8 @@ export interface ISignUp {
 	password: string;
 	confirmPassword: string;
 }
+
+export interface NewPost {
+	post: string;
+	image: FileList | undefined;
+}

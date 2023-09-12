@@ -4,8 +4,7 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 
 import { ISignUp } from "@/interfaces/inputs";
-import { SignUpSchema } from "@/yup/schemas";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { SignUpSchema, getYupSchema } from "@/yup/schemas";
 import { TbHealthRecognition } from "react-icons/tb";
 
 function Page() {
@@ -15,7 +14,7 @@ function Page() {
 		register,
 		handleSubmit,
 		formState: { errors },
-	} = useForm<ISignUp>({ resolver: yupResolver(SignUpSchema) });
+	} = useForm<ISignUp>(getYupSchema(SignUpSchema));
 
 	const handleSignUp = handleSubmit((data) => {
 		setIsSigninUp(true);
