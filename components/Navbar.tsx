@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+
 import { TbHealthRecognition } from "react-icons/tb";
 import { AiOutlinePlus } from "react-icons/ai";
 import { HiOutlineSwitchHorizontal } from "react-icons/hi";
@@ -20,10 +21,16 @@ function Navbar() {
 				<button className="btn btn-primary normal-case hidden md:inline-flex"> Para ti</button>
 			</div>
 			<div className="navbar-end">
-				<button className="btn btn-primary btn-circle md:hidden">
+				<button
+					className="btn btn-primary btn-circle md:hidden"
+					onClick={() => document.getElementById("newPostModal")?.showModal()}
+				>
 					<AiOutlinePlus className="h-6 w-6" />
 				</button>
-				<button className="btn btn-primary normal-case hidden md:inline-flex">
+				<button
+					className="btn btn-primary normal-case hidden md:inline-flex"
+					onClick={() => document.getElementById("newPostModal")?.showModal()}
+				>
 					<AiOutlinePlus className="h-6 w-6" /> Contar experiencia
 				</button>
 			</div>
