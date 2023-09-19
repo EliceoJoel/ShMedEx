@@ -15,3 +15,7 @@ export interface NewPost {
 	post: string;
 	image: FileList | undefined;
 }
+
+export interface NewComment {
+	comment: string;
+}

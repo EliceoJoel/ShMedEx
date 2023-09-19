@@ -25,6 +25,10 @@ export const NewPostSchema = yup.object().shape({
 	image: yup.mixed().test("is-valid-image", "Image uploaded is not valid", (value: any) => isValidNoRequiredImageType(value)),
 });
 
+export const NewCommentSchema = yup.object().shape({
+	comment: yup.string().required("No se pueden agregar comentarios en blanco"),
+});
+
 export function getYupSchema(yupSchema: yup.ObjectSchema<any, yup.AnyObject, any, "">) {
 	return { resolver: yupResolver(yupSchema) };
 }
