@@ -11,7 +11,7 @@ const MyPost = {
 
 function Experiences() {
 	return (
-		<div className="">
+		<div>
 			<div className="flex justify-center w-full">
 				<Navbar />
 			</div>
