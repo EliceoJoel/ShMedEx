@@ -55,13 +55,13 @@ function Navbar() {
 			<div className="navbar-end">
 				<button
 					className="btn btn-primary btn-circle md:hidden"
-					onClick={() => document.getElementById("newPostModal")?.showModal()}
+					onClick={() => document.getElementById("postModal")?.showModal()}
 				>
 					<AiOutlinePlus className="h-6 w-6" />
 				</button>
 				<button
 					className="btn btn-primary normal-case hidden md:inline-flex"
-					onClick={() => document.getElementById("newPostModal")?.showModal()}
+					onClick={() => document.getElementById("postModal")?.showModal()}
 				>
 					<AiOutlinePlus className="h-6 w-6" /> Contar experiencia
 				</button>

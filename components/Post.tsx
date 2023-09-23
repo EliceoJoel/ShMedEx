@@ -1,20 +1,37 @@
 "use client";
+
+import { useState } from "react";
 import Image from "next/image";
 import { GrMore } from "react-icons/gr";
 import avatarImage from "@/public/avatar.jpg";
 import { Post } from "@/interfaces/objects";
 import { useRouter } from "next/navigation";
 import Interactions from "./Interactions";
+import PostModal from "./modals/PostModal";
 
 function Post({ post }: { post: Post }) {
 	const router = useRouter();
+
+	const [postToEdit, setPostToEdit] = useState<Post | null>(null);
 
 	const handlePostClick = () => {
 		router.push(`/experiences/${post.id}`);
 	};
 
+	const handleRemovePost = () => {
+		document.getElementById(post.id)?.remove();
+	};
+
+	const handleEditPost = () => {
+		setPostToEdit(post);
+		document.getElementById("postModal")?.showModal();
+	};
+
 	return (
-		<div className="flex flex-col gap-2 border-b border-b-gray-300 mb-4 max-w-3xl last:border-b-0 last:mb-0">
+		<div
+			id={post.id}
+			className="flex flex-col gap-2 border-b border-b-gray-300 mb-4 max-w-3xl last:border-b-0 last:mb-0"
+		>
 			<div className="flex gap-2">
 				<div className="avatar">
 					<div className="w-8 mask mask-circle">
@@ -37,10 +54,10 @@ function Post({ post }: { post: Post }) {
 						</summary>
 						<ul className="p-2 shadow menu dropdown-content z-[1] rounded-box w-24 bg-white">
 							<li>
-								<a>Editar</a>
+								<button onClick={handleEditPost}>Editar</button>
 							</li>
 							<li>
-								<a>Eliminar</a>
+								<button onClick={handleRemovePost}>Eliminar</button>
 							</li>
 						</ul>
 					</details>
@@ -51,6 +68,7 @@ function Post({ post }: { post: Post }) {
 				{post.image && <Image src={avatarImage} alt="post image" />}
 			</div>
 			<Interactions />
+			<PostModal postToEdit={postToEdit} changePostToEdit={setPostToEdit} />
 		</div>
 	);
 }

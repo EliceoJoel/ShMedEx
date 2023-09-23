@@ -1,22 +1,47 @@
 "use client";
 
-import { NewPost } from "@/interfaces/inputs";
-import { NewPostSchema, getYupSchema } from "@/yup/schemas";
+import { Dispatch, SetStateAction, useEffect } from "react";
+import Image from "next/image";
 import { useForm } from "react-hook-form";
 
-function NewPostModal() {
+import { NewPost } from "@/interfaces/inputs";
+import { Post } from "@/interfaces/objects";
+import { NewPostSchema, getYupSchema } from "@/yup/schemas";
+import ImagePost from "@/public/avatar.jpg";
+
+function PostModal({
+	postToEdit,
+	changePostToEdit,
+}: {
+	postToEdit: Post | null;
+	changePostToEdit: Dispatch<SetStateAction<Post | null>>;
+}) {
 	const {
 		register,
 		handleSubmit,
+		setValue,
+		reset,
 		formState: { errors },
 	} = useForm<NewPost>(getYupSchema(NewPostSchema));
 
+	useEffect(() => {
+		if (postToEdit != null) {
+			setValue("post", postToEdit.text);
+		}
+	}, [postToEdit]);
+
 	const handlePublish = handleSubmit(async (data) => {
 		console.log(data);
+		// loading started
+
+		// clear fields
+		reset();
+
+		// Loading finished
 	});
 
 	return (
-		<dialog id="newPostModal" className="modal modal-bottom sm:modal-middle">
+		<dialog id="postModal" className="modal modal-bottom sm:modal-middle">
 			<div className="modal-box">
 				<h3 className="font-bold text-lg text-center mb-4">Nueva experiencia</h3>
 				<form onSubmit={handlePublish}>
@@ -33,6 +58,12 @@ function NewPostModal() {
 							</label>
 						)}
 					</div>
+					{postToEdit != null && (
+						<div className="mb-4">
+							<Image alt="Image of editing post" src={ImagePost} />
+							<label>Selecciona una nueva imagen para reemplazar el actual</label>
+						</div>
+					)}
 					<div className="form-control w-full mb-4">
 						<input
 							type="file"
@@ -50,7 +81,11 @@ function NewPostModal() {
 						<button
 							className="btn"
 							type="button"
-							onClick={() => document.getElementById("newPostModal")?.close()}
+							onClick={() => {
+								document.getElementById("postModal")?.close();
+								changePostToEdit(null);
+								reset();
+							}}
 						>
 							Cerrar
 						</button>
@@ -61,10 +96,17 @@ function NewPostModal() {
 				</form>
 			</div>
 			<form method="dialog" className="modal-backdrop">
-				<button>close</button>
+				<button
+					onClick={() => {
+						changePostToEdit(null);
+						reset();
+					}}
+				>
+					close
+				</button>
 			</form>
 		</dialog>
 	);
 }
 
-export default NewPostModal;
+export default PostModal;
