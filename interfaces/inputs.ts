@@ -11,6 +11,13 @@ export interface ISignUp {
 	confirmPassword: string;
 }
 
+export interface IUserToRegister {
+	name: string;
+	lastname: string;
+	email: string;
+	password: string;
+}
+
 export interface NewPost {
 	post: string;
 	image: FileList | undefined;

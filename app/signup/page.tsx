@@ -1,25 +1,53 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 
-import { ISignUp } from "@/interfaces/inputs";
-import { SignUpSchema, getYupSchema } from "@/yup/schemas";
 import { TbHealthRecognition } from "react-icons/tb";
+
+import { ISignUp } from "@/interfaces/inputs";
+import { UserRequestResult } from "@/interfaces/objects";
+import { SignUpSchema, getYupSchema } from "@/yup/schemas";
+import { userStore } from "@/store/userStore";
+import { register as registerUser } from "@/utils/requests";
 
 function Page() {
 	const [isSigninUp, setIsSigninUp] = useState(false);
+	const { setUser } = userStore((state) => state);
+	const router = useRouter();
 
 	const {
 		register,
 		handleSubmit,
+		setError,
 		formState: { errors },
 	} = useForm<ISignUp>(getYupSchema(SignUpSchema));
 
-	const handleSignUp = handleSubmit((data) => {
+	const handleSignUp = handleSubmit(async (data) => {
 		setIsSigninUp(true);
 
-		console.log(data);
+		//Sign in with data base
+		const statusResult: UserRequestResult = await registerUser({
+			name: data.name,
+			lastname: data.lastName,
+			email: data.email,
+			password: data.password,
+		});
+		if (statusResult.status === 200 && statusResult.userInfo !== undefined) {
+			setUser({
+				id: statusResult.userInfo.id,
+				name: statusResult.userInfo.name,
+				lastName: statusResult.userInfo.lastname,
+				email: statusResult.userInfo.sub,
+			});
+			// redirect to experiences page
+			router.push("/experiences");
+		} else if (statusResult.status === 400) {
+			setError("email", { type: "custom", message: statusResult.message });
+		} else {
+			alert("Error interno, por favor recargue la pagina");
+		}
 
 		setIsSigninUp(false);
 	});
