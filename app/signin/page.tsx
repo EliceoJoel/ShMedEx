@@ -1,18 +1,26 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 
-import { ISignIn } from "@/interfaces/inputs";
-import { SignInSchema, getYupSchema } from "@/yup/schemas";
 import { TbHealthRecognition } from "react-icons/tb";
+
+import { ISignIn } from "@/interfaces/inputs";
+import { UserRequestResult } from "@/interfaces/objects";
+import { SignInSchema, getYupSchema } from "@/yup/schemas";
+import { login } from "@/utils/requests";
+import { userStore } from "@/store/userStore";
 
 function Page() {
 	const [isSignin, setIsSignin] = useState(false);
+	const { setUser } = userStore((state) => state);
+	const router = useRouter();
 
 	const {
 		register,
 		handleSubmit,
+		setError,
 		formState: { errors },
 	} = useForm<ISignIn>(getYupSchema(SignInSchema));
 
@@ -20,7 +28,22 @@ function Page() {
 		setIsSignin(true);
 
 		//Sign in with data base
-		console.log(data);
+		const statusResult: UserRequestResult = await login(data);
+		if (statusResult.status === 200 && statusResult.userInfo !== undefined) {
+			setUser({
+				id: statusResult.userInfo.id,
+				name: statusResult.userInfo.name,
+				lastName: statusResult.userInfo.lastname,
+				email: statusResult.userInfo.sub,
+			});
+			// redirect to experiences page
+			router.push("/experiences");
+		} else if (statusResult.status === 401) {
+			setError("email", { type: "custom", message: statusResult.message });
+			setError("password", { type: "custom", message: statusResult.message });
+		} else {
+			alert("Error interno, por favor recargue la pagina");
+		}
 
 		setIsSignin(false);
 	});
