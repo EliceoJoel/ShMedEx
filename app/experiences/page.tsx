@@ -1,5 +1,12 @@
+"use client";
+
 import Navbar from "@/components/Navbar";
 import Post from "@/components/Post";
+import { IPost } from "@/interfaces/objects";
+import { getNotFollowedPosts } from "@/services/post";
+import { userStore } from "@/store/userStore";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const MyPost1 = {
 	id: "wdfsdfs1",
@@ -16,6 +23,24 @@ const MyPost2 = {
 };
 
 function Experiences() {
+	const router = useRouter();
+	const { user } = userStore((user) => user);
+
+	const [posts, setPosts] = useState<IPost[]>([]);
+
+	useEffect(() => {
+		async function getPostData(token: string, userId: number) {
+			const data = await getNotFollowedPosts(userId);
+			setPosts(data);
+		}
+		const token = localStorage.getItem("token");
+		if (user === null || token === null) {
+			router.push("/signin");
+		} else {
+			getPostData(token, user.id);
+		}
+	}, []);
+
 	return (
 		<div>
 			<div className="flex justify-center w-full">

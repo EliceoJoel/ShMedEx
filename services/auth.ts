@@ -1,4 +1,4 @@
-import { AuthRequestType, baseUrl } from "@/constants/all";
+import { AuthRequestType } from "@/constants/all";
 import { ISignIn, IUserToRegister } from "@/interfaces/inputs";
 import { TokenDecoded } from "@/interfaces/objects";
 import jwt_decode from "jwt-decode";
@@ -42,7 +42,8 @@ export async function register(registerUserData: IUserToRegister) {
 async function fetchData(userData: ISignIn | IUserToRegister, authRequestType: AuthRequestType) {
 	try {
 		const response = await fetch(
-			baseUrl + (authRequestType === AuthRequestType.LOGIN ? "/auth/login" : "/auth/register"),
+			process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL +
+				(authRequestType === AuthRequestType.LOGIN ? "/auth/login" : "/auth/register"),
 			{
 				method: "POST",
 				headers: { "Content-Type": "application/json" },

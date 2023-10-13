@@ -10,7 +10,7 @@ import { ISignUp } from "@/interfaces/inputs";
 import { UserRequestResult } from "@/interfaces/objects";
 import { SignUpSchema, getYupSchema } from "@/yup/schemas";
 import { userStore } from "@/store/userStore";
-import { register as registerUser } from "@/utils/requests";
+import { register as registerUser } from "@/services/auth";
 
 function Page() {
 	const [isSigninUp, setIsSigninUp] = useState(false);

@@ -9,7 +9,7 @@ import { TbHealthRecognition } from "react-icons/tb";
 import { ISignIn } from "@/interfaces/inputs";
 import { UserRequestResult } from "@/interfaces/objects";
 import { SignInSchema, getYupSchema } from "@/yup/schemas";
-import { login } from "@/utils/requests";
+import { login } from "@/services/auth";
 import { userStore } from "@/store/userStore";
 
 function Page() {
