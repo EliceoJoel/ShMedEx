@@ -1,20 +1,22 @@
 "use client";
 
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 
 import { NewPost } from "@/interfaces/inputs";
-import { Post } from "@/interfaces/objects";
+import { IPost } from "@/interfaces/objects";
 import { NewPostSchema, getYupSchema } from "@/yup/schemas";
 import ImagePost from "@/public/avatar.jpg";
+import { userStore } from "@/store/userStore";
+import { createPost } from "@/services/post";
 
 function PostModal({
 	postToEdit,
 	changePostToEdit,
 }: {
-	postToEdit: Post | null;
-	changePostToEdit: Dispatch<SetStateAction<Post | null>>;
+	postToEdit: IPost | null;
+	changePostToEdit: Dispatch<SetStateAction<IPost | null>>;
 }) {
 	const {
 		register,
@@ -24,6 +26,10 @@ function PostModal({
 		formState: { errors },
 	} = useForm<NewPost>(getYupSchema(NewPostSchema));
 
+	const [isPublishing, setIsisPublishing] = useState(false);
+
+	const { user: loggedUser } = userStore((user) => user);
+
 	useEffect(() => {
 		if (postToEdit != null) {
 			setValue("post", postToEdit.text);
@@ -31,13 +37,22 @@ function PostModal({
 	}, [postToEdit]);
 
 	const handlePublish = handleSubmit(async (data) => {
-		console.log(data);
 		// loading started
+		setIsisPublishing(true);
+
+		//create post
+		if (loggedUser !== null) {
+			await createPost(data.post, data.image, loggedUser.id);
+		}
 
 		// clear fields
 		reset();
 
 		// Loading finished
+		setIsisPublishing(false);
+
+		//close modal
+		document.getElementById("postModal")?.close();
 	});
 
 	return (
@@ -90,7 +105,8 @@ function PostModal({
 							Cerrar
 						</button>
 						<button className="btn btn-primary" type="submit">
-							Publicar
+							{isPublishing && <span className="loading loading-infinity loading-md"></span>}
+							{isPublishing ? "Publicando" : "Publicar"}
 						</button>
 					</div>
 				</form>

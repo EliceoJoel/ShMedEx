@@ -20,7 +20,7 @@ export interface IUserToRegister {
 
 export interface NewPost {
 	post: string;
-	image: FileList | undefined;
+	image: FileList;
 }
 
 export interface NewComment {

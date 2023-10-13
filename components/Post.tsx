@@ -4,15 +4,15 @@ import { useState } from "react";
 import Image from "next/image";
 import { GrMore } from "react-icons/gr";
 import avatarImage from "@/public/avatar.jpg";
-import { Post } from "@/interfaces/objects";
+import { IPost } from "@/interfaces/objects";
 import { useRouter } from "next/navigation";
 import Interactions from "./Interactions";
 import PostModal from "./modals/PostModal";
 
-function Post({ post }: { post: Post }) {
+function Post({ post }: { post: IPost }) {
 	const router = useRouter();
 
-	const [postToEdit, setPostToEdit] = useState<Post | null>(null);
+	const [postToEdit, setPostToEdit] = useState<IPost | null>(null);
 
 	const handlePostClick = () => {
 		router.push(`/experiences/${post.id}`);
