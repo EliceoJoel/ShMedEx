@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useForm } from "react-hook-form";
 
 import { NewPost } from "@/interfaces/inputs";
-import { IPost } from "@/interfaces/objects";
+import { IPostWithUserName } from "@/interfaces/objects";
 import { NewPostSchema, getYupSchema } from "@/yup/schemas";
 import ImagePost from "@/public/avatar.jpg";
 import { userStore } from "@/store/userStore";
@@ -15,8 +15,8 @@ function PostModal({
 	postToEdit,
 	changePostToEdit,
 }: {
-	postToEdit: IPost | null;
-	changePostToEdit: Dispatch<SetStateAction<IPost | null>>;
+	postToEdit: IPostWithUserName | null;
+	changePostToEdit: Dispatch<SetStateAction<IPostWithUserName | null>>;
 }) {
 	const {
 		register,
@@ -32,7 +32,7 @@ function PostModal({
 
 	useEffect(() => {
 		if (postToEdit != null) {
-			setValue("post", postToEdit.text);
+			setValue("post", postToEdit.postInfo.content);
 		}
 	}, [postToEdit]);
 

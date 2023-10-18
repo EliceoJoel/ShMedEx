@@ -1,5 +1,3 @@
-import { error } from "console";
-
 export async function createPost(postText: string, postImage: FileList, userId: number) {
 	try {
 		const imageUrl = await getImageUrl(postImage);
@@ -68,7 +66,7 @@ export async function getNotFollowedPosts(userId: number) {
 		);
 		const data = await response.json();
 		if (!response.ok) {
-			alert("Error getting posts");
+			alert("Error getting not followed posts");
 			return;
 		}
 		return data;

@@ -1,8 +1,17 @@
 export interface IPost {
-	id: string;
-	text: string;
-	image: string | undefined;
-	date: Date;
+	id: number;
+	content: string;
+	image: string | null;
+	likes: number;
+	comments: IComment[];
+	createdAt: string;
+	updatedAt: string;
+}
+
+export interface IComment {
+	id: number;
+	content: string;
+	createdAt: string;
 }
 
 export interface User {
@@ -25,4 +34,9 @@ export interface UserRequestResult {
 	status: number;
 	message: string;
 	userInfo?: TokenDecoded;
+}
+
+export interface IPostWithUserName {
+	post: IPost;
+	userName: string;
 }

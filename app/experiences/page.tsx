@@ -2,42 +2,30 @@
 
 import Navbar from "@/components/Navbar";
 import Post from "@/components/Post";
-import { IPost } from "@/interfaces/objects";
+import { IPostWithUserName } from "@/interfaces/objects";
 import { getNotFollowedPosts } from "@/services/post";
 import { userStore } from "@/store/userStore";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-const MyPost1 = {
-	id: "wdfsdfs1",
-	text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero consectetur earum nisi, odit officiis voluptatibus ullam mollitia tempora porro praesentium! Velit, similique non eveniet voluptates perferendis alias facilis voluptate neque?",
-	image: "url",
-	date: new Date(),
-};
-
-const MyPost2 = {
-	id: "wdfsdfs2",
-	text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero consectetur earum nisi, odit officiis voluptatibus ullam mollitia tempora porro praesentium! Velit, similique non eveniet voluptates perferendis alias facilis voluptate neque?",
-	image: "url",
-	date: new Date(),
-};
-
 function Experiences() {
 	const router = useRouter();
 	const { user } = userStore((user) => user);
 
-	const [posts, setPosts] = useState<IPost[]>([]);
+	const [isDataLoading, setIsDataLoading] = useState(true);
+	const [posts, setPosts] = useState<IPostWithUserName[]>([]);
 
 	useEffect(() => {
-		async function getPostData(token: string, userId: number) {
+		async function getPostData(userId: number) {
 			const data = await getNotFollowedPosts(userId);
 			setPosts(data);
+			setIsDataLoading(false);
 		}
 		const token = localStorage.getItem("token");
 		if (user === null || token === null) {
 			router.push("/signin");
 		} else {
-			getPostData(token, user.id);
+			getPostData(user.id);
 		}
 	}, []);
 
@@ -47,8 +35,17 @@ function Experiences() {
 				<Navbar />
 			</div>
 			<div className="flex items-center w-full flex-col px-4 py-2 overflow-y-auto h-[calc(100vh-64px)] md:px-0">
-				<Post post={MyPost1} />
-				<Post post={MyPost2} />
+				{isDataLoading ? (
+					<div className="flex h-full justify-center">
+						<span className="loading loading-infinity w-12 md:w-20"></span>
+					</div>
+				) : (
+					<>
+						{posts.map((post) => {
+							return <Post postWithUserName={post} key={post.post.id} />;
+						})}
+					</>
+				)}
 			</div>
 		</div>
 	);
