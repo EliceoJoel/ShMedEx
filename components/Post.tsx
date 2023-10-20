@@ -1,19 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 import Image from "next/image";
 import { GrMore } from "react-icons/gr";
 import avatarImage from "@/public/avatar.jpg";
 import { IPostWithUserName } from "@/interfaces/objects";
 import { useRouter } from "next/navigation";
 import Interactions from "./Interactions";
-import PostModal from "./modals/PostModal";
 import { formatDate } from "@/utils/all";
 
-function Post({ postWithUserName }: { postWithUserName: IPostWithUserName }) {
+function Post({
+	postWithUserName,
+	setPostToEdit,
+}: {
+	postWithUserName: IPostWithUserName;
+	setPostToEdit: Dispatch<SetStateAction<IPostWithUserName | null>>;
+}) {
 	const router = useRouter();
-
-	const [postToEdit, setPostToEdit] = useState<IPostWithUserName | null>(null);
 
 	const handlePostClick = () => {
 		router.push(`/experiences/${postWithUserName.post.id}`);
@@ -68,7 +71,6 @@ function Post({ postWithUserName }: { postWithUserName: IPostWithUserName }) {
 				)}
 			</div>
 			<Interactions />
-			<PostModal postToEdit={postToEdit} changePostToEdit={setPostToEdit} />
 		</div>
 	);
 }

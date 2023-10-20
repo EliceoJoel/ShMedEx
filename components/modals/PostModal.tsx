@@ -7,7 +7,6 @@ import { useForm } from "react-hook-form";
 import { NewPost } from "@/interfaces/inputs";
 import { IPostWithUserName } from "@/interfaces/objects";
 import { NewPostSchema, getYupSchema } from "@/yup/schemas";
-import ImagePost from "@/public/avatar.jpg";
 import { userStore } from "@/store/userStore";
 import { createPost } from "@/services/post";
 
@@ -32,7 +31,7 @@ function PostModal({
 
 	useEffect(() => {
 		if (postToEdit != null) {
-			setValue("post", postToEdit.postInfo.content);
+			setValue("post", postToEdit.post.content);
 		}
 	}, [postToEdit]);
 
@@ -75,7 +74,7 @@ function PostModal({
 					</div>
 					{postToEdit != null && (
 						<div className="mb-4">
-							<Image alt="Image of editing post" src={ImagePost} />
+							<Image alt="Image of editing post" src={postToEdit.post.image as string} />
 							<label>Selecciona una nueva imagen para reemplazar el actual</label>
 						</div>
 					)}

@@ -7,7 +7,7 @@ interface State {
 }
 
 interface Actions {
-	setUser: (user: User) => void;
+	setUser: (user: User | null) => void;
 	removeUser: () => void;
 }
 

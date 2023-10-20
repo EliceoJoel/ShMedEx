@@ -1,14 +1,12 @@
 "use client";
 
-import { useState } from "react";
 import { TbHealthRecognition } from "react-icons/tb";
 import { AiOutlinePlus } from "react-icons/ai";
 import { HiOutlineSwitchHorizontal } from "react-icons/hi";
 import { ExpPage } from "@/constants/all";
+import { INavBarProps } from "@/interfaces/objects";
 
-function Navbar() {
-	const [currentExpPage, setCurrentExpPage] = useState<string>(ExpPage.FOR_YOU);
-
+function Navbar({ currentExpPage, setCurrentExpPage }: INavBarProps) {
 	const handleSwitch = (nextExpPage: string) => {
 		setCurrentExpPage(nextExpPage);
 	};
@@ -29,7 +27,7 @@ function Navbar() {
 					}}
 				>
 					<HiOutlineSwitchHorizontal className="h-6 w-6" />{" "}
-					{currentExpPage === ExpPage.FOR_YOU ? "Para ti" : "Siguiendo"}
+					{currentExpPage === ExpPage.FOR_YOU || currentExpPage === "" ? "Para ti" : "Siguiendo"}
 				</button>
 				<button
 					className={`btn normal-case hidden md:inline-flex ${
@@ -43,7 +41,7 @@ function Navbar() {
 				</button>
 				<button
 					className={`btn normal-case hidden md:inline-flex ${
-						currentExpPage === ExpPage.FOR_YOU && "btn-primary"
+						(currentExpPage === ExpPage.FOR_YOU || currentExpPage === "") && "btn-primary"
 					}`}
 					onClick={() => {
 						handleSwitch(ExpPage.FOR_YOU);
