@@ -74,3 +74,22 @@ export async function getNotFollowedPosts(userId: number) {
 		console.error(error);
 	}
 }
+
+export async function getFollowedPosts(userId: number) {
+	try {
+		const response = await fetch(
+			process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL + "/api/v1/post/followed/" + userId,
+			{
+				headers: { "Content-Type": "application/json" },
+			}
+		);
+		const data = await response.json();
+		if (!response.ok) {
+			alert("Error getting not followed posts");
+			return;
+		}
+		return data;
+	} catch (error) {
+		console.error(error);
+	}
+}

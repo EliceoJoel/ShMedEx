@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from "react";
+
 export interface IPost {
 	id: number;
 	content: string;
@@ -39,4 +41,9 @@ export interface UserRequestResult {
 export interface IPostWithUserName {
 	post: IPost;
 	userName: string;
+}
+
+export interface INavBarProps {
+	currentExpPage: string;
+	setCurrentExpPage: Dispatch<SetStateAction<string>>;
 }
