@@ -3,8 +3,9 @@ import { FaHandHoldingMedical } from "react-icons/fa";
 import { AiFillHeart } from "react-icons/ai";
 import { FaComments } from "react-icons/fa";
 import NewCommentModal from "./modals/NewCommentModal";
+import { IInteractionsProps } from "@/interfaces/objects";
 
-function Interactions() {
+function Interactions({followers, likes, comments}: IInteractionsProps) {
 	const handleFollow = (event: React.MouseEvent<HTMLElement>) => {
 		event.stopPropagation();
 	};
@@ -14,7 +15,6 @@ function Interactions() {
 	};
 
 	const handleComment = () => {
-		//event.stopPropagation();
 		document.getElementById("newCommentModal")?.showModal();
 	};
 
@@ -24,22 +24,22 @@ function Interactions() {
 				<button className="btn btn-sm btn-ghost btn-circle">
 					<FaHandHoldingMedical className="h-6 w-6 text-primary" />
 				</button>
-				<span className="md:hidden">23</span>
-				<span className="hidden md:block">23 Seguidos</span>
+				<span className="md:hidden">{followers}</span>
+				<span className="hidden md:block">{`${followers} Seguidos`}</span>
 			</div>
 			<div className="flex gap-1 items-center hover:cursor-pointer" onClick={handleLike}>
 				<button className="btn btn-sm btn-ghost btn-circle">
 					<AiFillHeart className="h-6 w-6 text-secondary" />
 				</button>
-				<span className="md:hidden">23</span>
-				<span className="hidden md:block">23 Me gustas</span>
+				<span className="md:hidden">{likes}</span>
+				<span className="hidden md:block">{`${likes} Me gustas`}</span>
 			</div>
 			<div className="flex gap-1 items-center hover:cursor-pointer" onClick={handleComment}>
 				<button className="btn btn-sm btn-ghost btn-circle">
 					<FaComments className="h-6 w-6" />
 				</button>
-				<span className="md:hidden">23</span>
-				<span className="hidden md:block">23 Comentarios</span>
+				<span className="md:hidden">{comments}</span>
+				<span className="hidden md:block">{`${comments} Comentarios`}</span>
 			</div>
 			<NewCommentModal />
 		</div>

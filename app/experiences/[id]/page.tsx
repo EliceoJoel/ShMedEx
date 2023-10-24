@@ -1,15 +1,23 @@
+"use client";
+
 import BackButton from "@/components/BackButton";
 import Comments from "@/components/Comments";
 import Post from "@/components/Post";
+import { IPostWithUserName } from "@/interfaces/objects";
+import { getPostById } from "@/services/post";
+import { useEffect, useState } from "react";
 
-const MyPost = {
-	id: "wdfsdfs",
-	text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero consectetur earum nisi, odit officiis voluptatibus ullam mollitia tempora porro praesentium! Velit, similique non eveniet voluptates perferendis alias facilis voluptate neque?",
-	image: "url",
-	date: new Date(),
-};
+function SpecificPost({ params }: { params: { id: string } }) {
+	const [postWithUserName, setPostWithUserName] = useState<IPostWithUserName>();
 
-function SpecificPost() {
+	useEffect(() => {
+		async function getPostData() {
+			const postData = await getPostById(params.id);
+			setPostWithUserName(postData);
+		}
+		getPostData();
+	}, []);
+
 	return (
 		<div>
 			<div className="h-12 flex justify-center">
@@ -17,15 +25,21 @@ function SpecificPost() {
 					<BackButton />
 				</div>
 			</div>
-			<div className="flex items-center w-full flex-col px-4 py-2 overflow-y-auto h-[calc(100vh-64px)] md:px-0">
-				<Post post={MyPost} />
-				<div className="w-full flex flex-col items-center">
-					<Comments />
-					<Comments />
-					<Comments />
-					<Comments />
+			{postWithUserName ? (
+				<div className="flex items-center w-full flex-col px-4 py-2 overflow-y-auto h-[calc(100vh-64px)] md:px-0">
+					<Post postWithUserName={postWithUserName} setPostToEdit={null} />
+					<div className="w-full flex flex-col items-center">
+						<Comments />
+						<Comments />
+						<Comments />
+						<Comments />
+					</div>
 				</div>
-			</div>
+			) : (
+				<div className="flex h-full justify-center">
+					<span className="loading loading-infinity w-12 md:w-20"></span>
+				</div>
+			)}
 		</div>
 	);
 }
