@@ -1,21 +1,14 @@
 "use client";
 
-import { Dispatch, SetStateAction } from "react";
 import Image from "next/image";
 import { GrMore } from "react-icons/gr";
 import avatarImage from "@/public/avatar.jpg";
-import { IPostWithUserName } from "@/interfaces/objects";
+import { IPostProps } from "@/interfaces/objects";
 import { useRouter } from "next/navigation";
 import Interactions from "./Interactions";
 import { formatDate } from "@/utils/all";
 
-function Post({
-	postWithUserName,
-	setPostToEdit,
-}: {
-	postWithUserName: IPostWithUserName;
-	setPostToEdit: Dispatch<SetStateAction<IPostWithUserName | null>>;
-}) {
+function Post({ postWithUserName, setPostToEdit }: IPostProps) {
 	const router = useRouter();
 
 	const handlePostClick = () => {
@@ -27,7 +20,9 @@ function Post({
 	};
 
 	const handleEditPost = () => {
-		setPostToEdit(postWithUserName);
+		if (setPostToEdit !== null) {
+			setPostToEdit(postWithUserName);
+		}
 		document.getElementById("postModal")?.showModal();
 	};
 
@@ -70,7 +65,11 @@ function Post({
 					<Image src={postWithUserName.post.image} alt="The post image" width={768} height={768} priority={true} />
 				)}
 			</div>
-			<Interactions />
+			<Interactions
+				followers={postWithUserName.numberOfFollowers}
+				likes={postWithUserName.post.likes}
+				comments={postWithUserName.post.comments.length}
+			/>
 		</div>
 	);
 }

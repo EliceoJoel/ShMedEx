@@ -41,9 +41,16 @@ export interface UserRequestResult {
 export interface IPostWithUserName {
 	post: IPost;
 	userName: string;
+	numberOfFollowers: number;
 }
 
 export interface INavBarProps {
 	currentExpPage: string;
 	setCurrentExpPage: Dispatch<SetStateAction<string>>;
+}
+
+export interface IInteractionsProps {
+	followers: number;
+	likes: number;
+	comments: number;
 }

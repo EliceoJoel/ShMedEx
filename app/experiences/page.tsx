@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Post from "@/components/Post";
 import PostModal from "@/components/modals/PostModal";
@@ -15,6 +15,7 @@ import Link from "next/link";
 
 function Experiences() {
 	const router = useRouter();
+	const searchParams = useSearchParams();
 	const { user, setUser } = userStore((user) => user);
 
 	const [isDataLoading, setIsDataLoading] = useState(true);
@@ -35,6 +36,7 @@ function Experiences() {
 		}
 		setIsDataLoading(true);
 		const token = localStorage.getItem("token");
+
 		if (user === null || token === null) {
 			router.push("/signin");
 		} else {
@@ -45,7 +47,11 @@ function Experiences() {
 				router.push("/experiences?type=following");
 				getPostFollowedData(user.id);
 			} else {
-				getPostNotFollowedData(user.id);
+				if (searchParams.get("type")) {
+					setCurrentExpPage(searchParams.get("type") as string);
+				} else {
+					getPostNotFollowedData(user.id);
+				}
 			}
 		}
 	}, [currentExpPage, user]);
