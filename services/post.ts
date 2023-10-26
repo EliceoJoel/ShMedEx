@@ -112,3 +112,22 @@ export async function getPostById(postId: string) {
 		console.error(error);
 	}
 }
+
+export async function getUserPosts(userId: number) {
+	try {
+		const response = await fetch(
+			process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL + "/api/v1/post/user/" + userId,
+			{
+				headers: { "Content-Type": "application/json" },
+			}
+		);
+		const data = await response.json();
+		if (!response.ok) {
+			alert("Error getting user's post");
+			return;
+		}
+		return data;
+	} catch (error) {
+		console.error(error);
+	}
+}
