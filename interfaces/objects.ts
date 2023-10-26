@@ -54,3 +54,8 @@ export interface IInteractionsProps {
 	likes: number;
 	comments: number;
 }
+
+export interface IPostProps {
+	postWithUserName: IPostWithUserName;
+	setPostToEdit: Dispatch<SetStateAction<IPostWithUserName | null>> | null;
+}

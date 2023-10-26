@@ -4,12 +4,13 @@ import Image from "next/image";
 import { GrMore } from "react-icons/gr";
 import avatarImage from "@/public/avatar.jpg";
 import { IPostProps } from "@/interfaces/objects";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Interactions from "./Interactions";
 import { formatDate } from "@/utils/all";
 
 function Post({ postWithUserName, setPostToEdit }: IPostProps) {
 	const router = useRouter();
+	const pathname = usePathname();
 
 	const handlePostClick = () => {
 		router.push(`/experiences/${postWithUserName.post.id}`);
@@ -39,24 +40,26 @@ function Post({ postWithUserName, setPostToEdit }: IPostProps) {
 						<span className="text-sm font-semibold">{postWithUserName.userName}</span>
 						<span className="text-xs">{formatDate(new Date(postWithUserName.post.createdAt))}</span>
 					</div>
-					<details className="dropdown dropdown-end">
-						<summary
-							className="btn btn-sm btn-circle btn-ghost"
-							onClick={(event) => {
-								event.stopPropagation();
-							}}
-						>
-							<GrMore />
-						</summary>
-						<ul className="p-2 shadow menu dropdown-content z-[1] rounded-box w-24 bg-white">
-							<li>
-								<button onClick={handleEditPost}>Editar</button>
-							</li>
-							<li>
-								<button onClick={handleRemovePost}>Eliminar</button>
-							</li>
-						</ul>
-					</details>
+					{pathname === "/profile" && (
+						<details className="dropdown dropdown-end">
+							<summary
+								className="btn btn-sm btn-circle btn-ghost"
+								onClick={(event) => {
+									event.stopPropagation();
+								}}
+							>
+								<GrMore />
+							</summary>
+							<ul className="p-2 shadow menu dropdown-content z-[1] rounded-box w-24 bg-white">
+								<li>
+									<button onClick={handleEditPost}>Editar</button>
+								</li>
+								<li>
+									<button onClick={handleRemovePost}>Eliminar</button>
+								</li>
+							</ul>
+						</details>
+					)}
 				</div>
 			</div>
 			<div className="ml-10 hover:cursor-pointer" onClick={handlePostClick}>
