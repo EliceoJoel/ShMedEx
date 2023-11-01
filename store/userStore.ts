@@ -11,7 +11,7 @@ interface Actions {
 	removeUser: () => void;
 }
 
-export const userStore = create<State & Actions>()(
+export const useUserStore = create<State & Actions>()(
 	persist(
 		(set) => ({
 			user: null,

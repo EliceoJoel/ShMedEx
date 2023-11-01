@@ -1,21 +1,27 @@
 "use client";
 
 import BackButton from "@/components/BackButton";
-import Comments from "@/components/Comments";
+import Comment from "@/components/Comment";
 import Post from "@/components/Post";
-import { IPostWithUserName } from "@/interfaces/objects";
-import { getPostById } from "@/services/post";
+import { ICommentFromDB, IPostWithUserName } from "@/interfaces/objects";
+import { getPostById, getPostComments } from "@/services/post";
 import { useEffect, useState } from "react";
 
 function SpecificPost({ params }: { params: { id: string } }) {
 	const [postWithUserName, setPostWithUserName] = useState<IPostWithUserName>();
+	const [postComments, setPostComments] = useState<ICommentFromDB[]>();
 
 	useEffect(() => {
 		async function getPostData() {
 			const postData = await getPostById(params.id);
 			setPostWithUserName(postData);
 		}
+		async function getPostCommentsData() {
+			const postCommentsData = await getPostComments(params.id);
+			setPostComments(postCommentsData);
+		}
 		getPostData();
+		getPostCommentsData();
 	}, []);
 
 	return (
@@ -28,12 +34,22 @@ function SpecificPost({ params }: { params: { id: string } }) {
 			{postWithUserName ? (
 				<div className="flex items-center w-full flex-col px-4 py-2 overflow-y-auto h-[calc(100vh-64px)] md:px-0">
 					<Post postWithUserName={postWithUserName} setPostToEdit={null} />
-					<div className="w-full flex flex-col items-center">
-						<Comments />
-						<Comments />
-						<Comments />
-						<Comments />
-					</div>
+					{postComments ? (
+						<div className="w-full flex flex-col">
+							{postComments.map((postComment) => (
+								<Comment
+									content={postComment.comment.content}
+									createdAt={postComment.comment.createdAt}
+									userWhoCommented={postComment.userWhoCommented}
+									key={postComment.comment.id}
+								/>
+							))}
+						</div>
+					) : (
+						<div className="flex h-full justify-center">
+							<span className="loading loading-infinity w-12 md:w-20"></span>
+						</div>
+					)}
 				</div>
 			) : (
 				<div className="flex h-full justify-center">

@@ -77,12 +77,9 @@ export async function getNotFollowedPosts(userId: number) {
 
 export async function getFollowedPosts(userId: number) {
 	try {
-		const response = await fetch(
-			process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL + "/api/v1/post/followed/" + userId,
-			{
-				headers: { "Content-Type": "application/json" },
-			}
-		);
+		const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL + "/api/v1/post/followed/" + userId, {
+			headers: { "Content-Type": "application/json" },
+		});
 		const data = await response.json();
 		if (!response.ok) {
 			alert("Error getting not followed posts");
@@ -96,12 +93,9 @@ export async function getFollowedPosts(userId: number) {
 
 export async function getPostById(postId: string) {
 	try {
-		const response = await fetch(
-			process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL + "/api/v1/post/" + postId,
-			{
-				headers: { "Content-Type": "application/json" },
-			}
-		);
+		const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL + "/api/v1/post/" + postId, {
+			headers: { "Content-Type": "application/json" },
+		});
 		const data = await response.json();
 		if (!response.ok) {
 			alert("Error getting not followed posts");
@@ -115,15 +109,49 @@ export async function getPostById(postId: string) {
 
 export async function getUserPosts(userId: number) {
 	try {
-		const response = await fetch(
-			process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL + "/api/v1/post/user/" + userId,
-			{
-				headers: { "Content-Type": "application/json" },
-			}
-		);
+		const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL + "/api/v1/post/user/" + userId, {
+			headers: { "Content-Type": "application/json" },
+		});
 		const data = await response.json();
 		if (!response.ok) {
 			alert("Error getting user's post");
+			return;
+		}
+		return data;
+	} catch (error) {
+		console.error(error);
+	}
+}
+
+export async function addCommentToPost(postId: number, userId: number, commentToAdd: string) {
+	try {
+		await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL}/api/v1/post/${postId}/comment`, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				content: commentToAdd,
+				createdAt: new Date(),
+				user: {
+					id: userId,
+				},
+			}),
+		}).catch((error) => {
+			console.error(error);
+		});
+	} catch (error) {
+		console.error(error);
+		throw error;
+	}
+}
+
+export async function getPostComments(postId: string) {
+	try {
+		const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL}/api/v1/post/${postId}/comments`, {
+			headers: { "Content-Type": "application/json" },
+		});
+		const data = await response.json();
+		if (!response.ok) {
+			alert("Error getting post comments");
 			return;
 		}
 		return data;

@@ -8,7 +8,7 @@ import PostModal from "@/components/modals/PostModal";
 import { ExpPage } from "@/constants/all";
 import { IPostWithUserName } from "@/interfaces/objects";
 import { getFollowedPosts, getNotFollowedPosts } from "@/services/post";
-import { userStore } from "@/store/userStore";
+import { useUserStore } from "@/store/userStore";
 import { LuMoreVertical } from "react-icons/lu";
 import { AiOutlineLogout, AiOutlineUser } from "react-icons/ai";
 import Link from "next/link";
@@ -16,7 +16,7 @@ import Link from "next/link";
 function Experiences() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
-	const { user, setUser } = userStore((user) => user);
+	const { user, setUser } = useUserStore((user) => user);
 
 	const [isDataLoading, setIsDataLoading] = useState(true);
 	const [posts, setPosts] = useState<IPostWithUserName[]>([]);

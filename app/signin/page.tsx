@@ -10,11 +10,11 @@ import { ISignIn } from "@/interfaces/inputs";
 import { UserRequestResult } from "@/interfaces/objects";
 import { SignInSchema, getYupSchema } from "@/yup/schemas";
 import { login } from "@/services/auth";
-import { userStore } from "@/store/userStore";
+import { useUserStore } from "@/store/userStore";
 
 function Page() {
 	const [isSignin, setIsSignin] = useState(false);
-	const { setUser } = userStore((state) => state);
+	const { setUser } = useUserStore((state) => state);
 	const router = useRouter();
 
 	const {
