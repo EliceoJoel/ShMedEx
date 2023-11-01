@@ -9,12 +9,12 @@ import { TbHealthRecognition } from "react-icons/tb";
 import { ISignUp } from "@/interfaces/inputs";
 import { UserRequestResult } from "@/interfaces/objects";
 import { SignUpSchema, getYupSchema } from "@/yup/schemas";
-import { userStore } from "@/store/userStore";
+import { useUserStore } from "@/store/userStore";
 import { register as registerUser } from "@/services/auth";
 
 function Page() {
 	const [isSigninUp, setIsSigninUp] = useState(false);
-	const { setUser } = userStore((state) => state);
+	const { setUser } = useUserStore((state) => state);
 	const router = useRouter();
 
 	const {

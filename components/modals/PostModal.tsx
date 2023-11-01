@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import { NewPost } from "@/interfaces/inputs";
 import { IPostWithUserName } from "@/interfaces/objects";
 import { NewPostSchema, getYupSchema } from "@/yup/schemas";
-import { userStore } from "@/store/userStore";
+import { useUserStore } from "@/store/userStore";
 import { createPost } from "@/services/post";
 
 function PostModal({
@@ -27,7 +27,7 @@ function PostModal({
 
 	const [isPublishing, setIsisPublishing] = useState(false);
 
-	const { user: loggedUser } = userStore((user) => user);
+	const { user: loggedUser } = useUserStore((user) => user);
 
 	useEffect(() => {
 		if (postToEdit != null) {

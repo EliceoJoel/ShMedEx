@@ -5,7 +5,6 @@ export interface IPost {
 	content: string;
 	image: string | null;
 	likes: number;
-	comments: IComment[];
 	createdAt: string;
 	updatedAt: string;
 }
@@ -42,6 +41,7 @@ export interface IPostWithUserName {
 	post: IPost;
 	userName: string;
 	numberOfFollowers: number;
+	numberOfComments: number;
 }
 
 export interface INavBarProps {
@@ -53,9 +53,25 @@ export interface IInteractionsProps {
 	followers: number;
 	likes: number;
 	comments: number;
+	postId: number;
 }
 
 export interface IPostProps {
 	postWithUserName: IPostWithUserName;
 	setPostToEdit: Dispatch<SetStateAction<IPostWithUserName | null>> | null;
+}
+
+export interface ICommentProps {
+	content: string;
+	createdAt: string;
+	userWhoCommented: string;
+}
+
+export interface ICommentFromDB {
+	comment: {
+		id: number;
+		content: string;
+		createdAt: string;
+	},
+	userWhoCommented: string;
 }

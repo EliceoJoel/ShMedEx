@@ -4,8 +4,11 @@ import { AiFillHeart } from "react-icons/ai";
 import { FaComments } from "react-icons/fa";
 import NewCommentModal from "./modals/NewCommentModal";
 import { IInteractionsProps } from "@/interfaces/objects";
+import { usePostIdStore } from "@/store/postIdStore";
 
-function Interactions({followers, likes, comments}: IInteractionsProps) {
+function Interactions({ followers, likes, comments, postId }: IInteractionsProps) {
+	const { setPostId } = usePostIdStore((state) => state);
+
 	const handleFollow = (event: React.MouseEvent<HTMLElement>) => {
 		event.stopPropagation();
 	};
@@ -15,6 +18,7 @@ function Interactions({followers, likes, comments}: IInteractionsProps) {
 	};
 
 	const handleComment = () => {
+		setPostId(postId);
 		document.getElementById("newCommentModal")?.showModal();
 	};
 

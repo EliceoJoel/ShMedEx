@@ -2,7 +2,7 @@
 import Image from "next/image";
 import avatarImage from "@/public/avatar.jpg";
 import BackButton from "@/components/BackButton";
-import { userStore } from "@/store/userStore";
+import { useUserStore } from "@/store/userStore";
 import { useEffect, useState } from "react";
 import { IPostWithUserName } from "@/interfaces/objects";
 import { getUserPosts } from "@/services/post";
@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import Post from "@/components/Post";
 
 function Profile() {
-	const { user } = userStore((user) => user);
+	const { user } = useUserStore((user) => user);
 	const router = useRouter();
 	const [myPosts, setMyPosts] = useState<IPostWithUserName[]>([]);
 	const [postsAreLoading, setPostsAreLoading] = useState(true);
