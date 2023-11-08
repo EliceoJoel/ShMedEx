@@ -17,7 +17,7 @@ function SpecificPost({ params }: { params: { id: string } }) {
 			setPostWithUserName(postData);
 		}
 		async function getPostCommentsData() {
-			const postCommentsData = await getPostComments(params.id);
+			const postCommentsData = await getPostComments(Number(params.id));
 			setPostComments(postCommentsData);
 		}
 		getPostData();
@@ -33,9 +33,9 @@ function SpecificPost({ params }: { params: { id: string } }) {
 			</div>
 			{postWithUserName ? (
 				<div className="flex items-center w-full flex-col px-4 py-2 overflow-y-auto h-[calc(100vh-64px)] md:px-0">
-					<Post postWithUserName={postWithUserName} setPostToEdit={null} />
+					<Post postWithUserName={postWithUserName} setPostToEdit={null} setPostComments={setPostComments}/>
 					{postComments ? (
-						<div className="w-full flex flex-col">
+						<div className="w-full flex flex-col max-w-3xl">
 							{postComments.map((postComment) => (
 								<Comment
 									content={postComment.comment.content}

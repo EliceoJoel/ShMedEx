@@ -144,7 +144,7 @@ export async function addCommentToPost(postId: number, userId: number, commentTo
 	}
 }
 
-export async function getPostComments(postId: string) {
+export async function getPostComments(postId: number) {
 	try {
 		const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL}/api/v1/post/${postId}/comments`, {
 			headers: { "Content-Type": "application/json" },
