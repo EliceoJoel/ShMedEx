@@ -2,7 +2,6 @@
 import { FaHandHoldingMedical } from "react-icons/fa";
 import { AiFillHeart } from "react-icons/ai";
 import { FaComments } from "react-icons/fa";
-import NewCommentModal from "./modals/NewCommentModal";
 import { IInteractionsProps } from "@/interfaces/objects";
 import { usePostIdStore } from "@/store/postIdStore";
 
@@ -42,10 +41,9 @@ function Interactions({ followers, likes, comments, postId }: IInteractionsProps
 				<button className="btn btn-sm btn-ghost btn-circle">
 					<FaComments className="h-6 w-6" />
 				</button>
-				<span className="md:hidden">{comments}</span>
-				<span className="hidden md:block">{`${comments} Comentarios`}</span>
+				<span id={`mobileNumberOfCommentsPost${postId}`} className="md:hidden">{comments}</span>
+				<span id={`desktopNumberOfCommentsPost${postId}`} className="hidden md:block">{`${comments} Comentarios`}</span>
 			</div>
-			<NewCommentModal />
 		</div>
 	);
 }

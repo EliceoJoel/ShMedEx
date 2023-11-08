@@ -74,7 +74,7 @@ function Experiences() {
 				) : (
 					<>
 						{posts.map((post) => {
-							return <Post postWithUserName={post} key={post.post.id} setPostToEdit={setPostToEdit} />;
+							return <Post postWithUserName={post} key={post.post.id} setPostToEdit={setPostToEdit} setPostComments={null}/>;
 						})}
 					</>
 				)}

@@ -1,14 +1,19 @@
 "use client";
 
 import Image from "next/image";
-import { GrMore } from "react-icons/gr";
-import avatarImage from "@/public/avatar.jpg";
-import { IPostProps } from "@/interfaces/objects";
 import { usePathname, useRouter } from "next/navigation";
+
+import { GrMore } from "react-icons/gr";
+
 import Interactions from "./Interactions";
+import NewCommentModal from "./modals/NewCommentModal";
+
+import avatarImage from "@/public/avatar.jpg";
+
+import { IPostProps } from "@/interfaces/objects";
 import { formatDate } from "@/utils/all";
 
-function Post({ postWithUserName, setPostToEdit }: IPostProps) {
+function Post({ postWithUserName, setPostToEdit, setPostComments }: IPostProps) {
 	const router = useRouter();
 	const pathname = usePathname();
 
@@ -74,6 +79,7 @@ function Post({ postWithUserName, setPostToEdit }: IPostProps) {
 				comments={postWithUserName.numberOfComments}
 				postId={postWithUserName.post.id}
 			/>
+			<NewCommentModal setPostComments={setPostComments} />
 		</div>
 	);
 }
