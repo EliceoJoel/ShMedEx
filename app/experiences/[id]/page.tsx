@@ -3,25 +3,34 @@
 import BackButton from "@/components/BackButton";
 import Comment from "@/components/Comment";
 import Post from "@/components/Post";
-import { ICommentFromDB, IPostWithUserName } from "@/interfaces/objects";
+import { ICommentFromDB, IPostWithUserName, User } from "@/interfaces/objects";
 import { getPostById, getPostComments } from "@/services/post";
+import { useUserStore } from "@/store/userStore";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 function SpecificPost({ params }: { params: { id: string } }) {
 	const [postWithUserName, setPostWithUserName] = useState<IPostWithUserName>();
 	const [postComments, setPostComments] = useState<ICommentFromDB[]>();
 
+	const { user } = useUserStore((store) => store);
+	const router = useRouter();
+
 	useEffect(() => {
-		async function getPostData() {
-			const postData = await getPostById(params.id);
+		async function getPostData(user: User) {
+			const postData = await getPostById(params.id, user.id);
 			setPostWithUserName(postData);
 		}
 		async function getPostCommentsData() {
 			const postCommentsData = await getPostComments(Number(params.id));
 			setPostComments(postCommentsData);
 		}
-		getPostData();
-		getPostCommentsData();
+		if (user !== null) {
+			getPostData(user);
+			getPostCommentsData();
+		} else {
+			router.push("/signin");
+		}
 	}, []);
 
 	return (
@@ -33,7 +42,7 @@ function SpecificPost({ params }: { params: { id: string } }) {
 			</div>
 			{postWithUserName ? (
 				<div className="flex items-center w-full flex-col px-4 py-2 overflow-y-auto h-[calc(100vh-64px)] md:px-0">
-					<Post postWithUserName={postWithUserName} setPostToEdit={null} setPostComments={setPostComments}/>
+					<Post postWithUserName={postWithUserName} setPostToEdit={null} setPostComments={setPostComments} />
 					{postComments ? (
 						<div className="w-full flex flex-col max-w-3xl">
 							{postComments.map((postComment) => (
