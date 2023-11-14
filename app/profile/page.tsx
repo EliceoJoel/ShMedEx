@@ -18,7 +18,6 @@ function Profile() {
 	useEffect(() => {
 		async function getMyPostsData(userId: number) {
 			const data = await getUserPosts(userId);
-			console.log(data);
 			setMyPosts(data);
 			setPostsAreLoading(false);
 		}
@@ -39,9 +38,8 @@ function Profile() {
 				</div>
 			</div>
 			<div className="flex flex-col items-center gap-4">
-				<h1 className="font-bold text-lg">Mi Perfil</h1>
 				<Image src={avatarImage} alt="user profile photo" className="rounded-full w-20 h-20" />
-				<span>{user?.name + " " + user?.lastName}</span>
+				<h1 className="font-bold text-2xl md:text-3xl">{user?.name + " " + user?.lastName}</h1>
 			</div>
 			<div className="p-4">
 				<h2 className="font-bold text-center">My Posts</h2>

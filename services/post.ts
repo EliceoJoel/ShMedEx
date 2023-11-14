@@ -91,10 +91,14 @@ export async function getFollowedPosts(userId: number) {
 	}
 }
 
-export async function getPostById(postId: string) {
+export async function getPostById(postId: string, userId: number) {
 	try {
 		const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL + "/api/v1/post/" + postId, {
+			method: "POST",
 			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				id: userId,
+			}),
 		});
 		const data = await response.json();
 		if (!response.ok) {
@@ -134,6 +138,7 @@ export async function addCommentToPost(postId: number, userId: number, commentTo
 				user: {
 					id: userId,
 				},
+				post: null,
 			}),
 		}).catch((error) => {
 			console.error(error);

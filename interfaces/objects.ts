@@ -4,7 +4,6 @@ export interface IPost {
 	id: number;
 	content: string;
 	image: string | null;
-	likes: number;
 	createdAt: string;
 	updatedAt: string;
 }
@@ -42,6 +41,7 @@ export interface IPostWithUserName {
 	userName: string;
 	numberOfFollowers: number;
 	numberOfComments: number;
+	numberOfLikes: number;
 }
 
 export interface INavBarProps {

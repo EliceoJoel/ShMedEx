@@ -75,7 +75,7 @@ function Post({ postWithUserName, setPostToEdit, setPostComments }: IPostProps) 
 			</div>
 			<Interactions
 				followers={postWithUserName.numberOfFollowers}
-				likes={postWithUserName.post.likes}
+				likes={postWithUserName.numberOfLikes}
 				comments={postWithUserName.numberOfComments}
 				postId={postWithUserName.post.id}
 			/>
