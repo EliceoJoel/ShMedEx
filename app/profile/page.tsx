@@ -1,13 +1,18 @@
 "use client";
-import Image from "next/image";
-import avatarImage from "@/public/avatar.jpg";
-import BackButton from "@/components/BackButton";
-import { useUserStore } from "@/store/userStore";
+
 import { useEffect, useState } from "react";
-import { IPostWithUserName } from "@/interfaces/objects";
-import { getUserPosts } from "@/services/post";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
+
+import BackButton from "@/components/BackButton";
 import Post from "@/components/Post";
+
+import { useUserStore } from "@/store/userStore";
+import { getUserPosts } from "@/services/post";
+
+
+import { IPostWithUserName } from "@/interfaces/objects";
+import avatarImage from "@/public/avatar.jpg";
 
 function Profile() {
 	const { user } = useUserStore((user) => user);
