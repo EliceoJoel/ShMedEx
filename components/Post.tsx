@@ -78,6 +78,8 @@ function Post({ postWithUserName, setPostToEdit, setPostComments }: IPostProps) 
 				likes={postWithUserName.numberOfLikes}
 				comments={postWithUserName.numberOfComments}
 				postId={postWithUserName.post.id}
+				isFollowedByLoggedUSer={postWithUserName.isFollowedByUser}
+				isLikedByLoggedUser={postWithUserName.isLikedByUser}
 			/>
 			<NewCommentModal setPostComments={setPostComments} />
 		</div>

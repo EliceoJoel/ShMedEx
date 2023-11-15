@@ -42,6 +42,8 @@ export interface IPostWithUserName {
 	numberOfFollowers: number;
 	numberOfComments: number;
 	numberOfLikes: number;
+	isFollowedByUser: boolean;
+	isLikedByUser: boolean;
 }
 
 export interface INavBarProps {
@@ -54,6 +56,8 @@ export interface IInteractionsProps {
 	likes: number;
 	comments: number;
 	postId: number;
+	isFollowedByLoggedUSer: boolean;
+	isLikedByLoggedUser: boolean;
 }
 
 export interface IPostProps {
