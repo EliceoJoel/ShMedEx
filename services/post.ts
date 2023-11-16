@@ -164,3 +164,23 @@ export async function getPostComments(postId: number) {
 		console.error(error);
 	}
 }
+
+export async function toggleLike(postId: number, userId: number) {
+	try {
+		const response = await fetch(
+			`${process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL}/api/v1/post/${postId}/toggle-like`,
+			{
+				method: "PUT",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					id: userId,
+				}),
+			}
+		);
+		if (!response.ok) {
+			alert("Error when user toggle like in post");
+		}
+	} catch (error) {
+		console.error(error);
+	}
+}

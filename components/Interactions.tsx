@@ -6,6 +6,8 @@ import { FaComments } from "react-icons/fa";
 import { usePostIdStore } from "@/store/postIdStore";
 
 import { IInteractionsProps } from "@/interfaces/objects";
+import { toggleLike } from "@/services/post";
+import { useUserStore } from "@/store/userStore";
 
 function Interactions({
 	followers,
@@ -15,16 +17,20 @@ function Interactions({
 	isFollowedByLoggedUSer,
 	isLikedByLoggedUser,
 }: IInteractionsProps) {
+	const { user } = useUserStore((state) => state);
 	const { setPostId } = usePostIdStore((state) => state);
 
 	const handleFollow = (event: React.MouseEvent<HTMLElement>) => {
 		event.stopPropagation();
 	};
 
-	const handleLike = () => {
+	const handleLike = async () => {
 		// Change color of the like button and increase or decrese the number
 		toggleLikeInUI();
 		// Toggle like in server side
+		if(user !== null) {
+			await toggleLike(postId, user.id);
+		}
 	};
 
 	const toggleLikeInUI = () => {
