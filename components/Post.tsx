@@ -12,6 +12,7 @@ import avatarImage from "@/public/avatar.jpg";
 
 import { IPostProps } from "@/interfaces/objects";
 import { formatDate } from "@/utils/all";
+import { removePost } from "@/services/post";
 
 function Post({ postWithUserName, setPostToEdit, setPostComments }: IPostProps) {
 	const router = useRouter();
@@ -21,8 +22,11 @@ function Post({ postWithUserName, setPostToEdit, setPostComments }: IPostProps) 
 		router.push(`/experiences/${postWithUserName.post.id}`);
 	};
 
-	const handleRemovePost = () => {
+	const handleRemovePost = async () => {
+		// Removes from the UI
 		document.getElementById(postWithUserName.post.id.toString())?.remove();
+		//Removes from database
+		await removePost(postWithUserName.post.id);
 	};
 
 	const handleEditPost = () => {
@@ -33,7 +37,7 @@ function Post({ postWithUserName, setPostToEdit, setPostComments }: IPostProps) 
 	};
 
 	return (
-		<div className="flex flex-col gap-2 border-b border-b-gray-300 mb-4 max-w-3xl last:border-b-0 last:mb-0">
+		<div id={postWithUserName.post.id.toString()} className="flex flex-col gap-2 border-b border-b-gray-300 mb-4 max-w-3xl last:border-b-0 last:mb-0">
 			<div className="flex gap-2">
 				<div className="avatar">
 					<div className="w-8 mask mask-circle">
