@@ -6,8 +6,9 @@ import { FaComments } from "react-icons/fa";
 import { usePostIdStore } from "@/store/postIdStore";
 
 import { IInteractionsProps } from "@/interfaces/objects";
-import { toggleLike } from "@/services/post";
+import { toggleFollow, toggleLike } from "@/services/post";
 import { useUserStore } from "@/store/userStore";
+import { usePathname } from "next/navigation";
 
 function Interactions({
 	followers,
@@ -17,18 +18,45 @@ function Interactions({
 	isFollowedByLoggedUSer,
 	isLikedByLoggedUser,
 }: IInteractionsProps) {
+	const pathname = usePathname();
 	const { user } = useUserStore((state) => state);
 	const { setPostId } = usePostIdStore((state) => state);
 
-	const handleFollow = (event: React.MouseEvent<HTMLElement>) => {
-		event.stopPropagation();
+	const handleFollow = async () => {
+		if (pathname !== "/profile") {
+			// Change color of the follow button and increase or decrese the number
+			toggleFollowInUI();
+			// Toggle follow in server side
+			if (user !== null) {
+				await toggleFollow(postId, user.id);
+			}
+		}
+	};
+
+	const toggleFollowInUI = () => {
+		const numberOfFollowMobileSpan = document.getElementById(`mobileNumberOfFollowsPost${postId}`);
+		const numberOfFollowDesktopSpan = document.getElementById(`desktopNumberOfFollowsPost${postId}`);
+		if (numberOfFollowMobileSpan !== null && numberOfFollowDesktopSpan !== null) {
+			const currentNumberOfFollows: number = Number(numberOfFollowMobileSpan.textContent);
+			const followButton = document.getElementById(`followButtonOfPost${postId}`);
+			const postIsAlreadyFollowed = followButton?.firstElementChild?.classList.contains("text-primary");
+			if (postIsAlreadyFollowed) {
+				followButton?.firstElementChild?.classList.remove("text-primary");
+				numberOfFollowDesktopSpan.innerText = (currentNumberOfFollows - 1).toString() + " Seguidos";
+				numberOfFollowMobileSpan.innerText = (currentNumberOfFollows - 1).toString();
+			} else {
+				followButton?.firstElementChild?.classList.add("text-primary");
+				numberOfFollowDesktopSpan.innerText = (currentNumberOfFollows + 1).toString() + " Seguidos";
+				numberOfFollowMobileSpan.innerText = (currentNumberOfFollows + 1).toString();
+			}
+		}
 	};
 
 	const handleLike = async () => {
 		// Change color of the like button and increase or decrese the number
 		toggleLikeInUI();
 		// Toggle like in server side
-		if(user !== null) {
+		if (user !== null) {
 			await toggleLike(postId, user.id);
 		}
 	};
@@ -59,14 +87,23 @@ function Interactions({
 
 	return (
 		<div className="flex justify-between ml-10 pb-2">
-			<div className="flex gap-1 items-center hover:cursor-pointer">
-				<button className="btn btn-sm btn-ghost btn-circle" onClick={handleFollow}>
+			<div className="flex gap-1 items-center">
+				<button
+					id={`followButtonOfPost${postId}`}
+					className={`btn btn-sm btn-ghost btn-circle ${pathname === "/profile" && "cursor-not-allowed"}`}
+					onClick={handleFollow}
+				>
 					<FaHandHoldingMedical className={`h-6 w-6 ${isFollowedByLoggedUSer && "text-primary"}`} />
 				</button>
-				<span className="md:hidden">{followers}</span>
-				<span className="hidden md:block">{`${followers} Seguidos`}</span>
+				<span id={`mobileNumberOfFollowsPost${postId}`} className="md:hidden">
+					{followers}
+				</span>
+				<span
+					id={`desktopNumberOfFollowsPost${postId}`}
+					className="hidden md:block"
+				>{`${followers} Seguidos`}</span>
 			</div>
-			<div className="flex gap-1 items-center hover:cursor-pointer">
+			<div className="flex gap-1 items-center">
 				<button id={`likeButtonOfPost${postId}`} className="btn btn-sm btn-ghost btn-circle" onClick={handleLike}>
 					<AiFillHeart className={`h-6 w-6 ${isLikedByLoggedUser && "text-secondary"}`} />
 				</button>
@@ -75,8 +112,8 @@ function Interactions({
 				</span>
 				<span id={`desktopNumberOfLikesPost${postId}`} className="hidden md:block">{`${likes} Me gustas`}</span>
 			</div>
-			<div className="flex gap-1 items-center hover:cursor-pointer" onClick={handleComment}>
-				<button className="btn btn-sm btn-ghost btn-circle">
+			<div className="flex gap-1 items-center">
+				<button className="btn btn-sm btn-ghost btn-circle" onClick={handleComment}>
 					<FaComments className="h-6 w-6" />
 				</button>
 				<span id={`mobileNumberOfCommentsPost${postId}`} className="md:hidden">
