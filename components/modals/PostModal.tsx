@@ -15,7 +15,7 @@ function PostModal({
 	changePostToEdit,
 }: {
 	postToEdit: IPostWithUserName | null;
-	changePostToEdit: Dispatch<SetStateAction<IPostWithUserName | null>>;
+	changePostToEdit: Dispatch<SetStateAction<IPostWithUserName | null>> | null;
 }) {
 	const {
 		register,
@@ -97,7 +97,9 @@ function PostModal({
 							type="button"
 							onClick={() => {
 								document.getElementById("postModal")?.close();
-								changePostToEdit(null);
+								if(changePostToEdit !== null) {
+									changePostToEdit(null);
+								}
 								reset();
 							}}
 						>
@@ -113,7 +115,9 @@ function PostModal({
 			<form method="dialog" className="modal-backdrop">
 				<button
 					onClick={() => {
-						changePostToEdit(null);
+						if(changePostToEdit !== null) {
+							changePostToEdit(null);
+						}
 						reset();
 					}}
 				>

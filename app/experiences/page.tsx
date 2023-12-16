@@ -2,16 +2,21 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
+
 import Navbar from "@/components/Navbar";
 import Post from "@/components/Post";
-import PostModal from "@/components/modals/PostModal";
+
 import { ExpPage } from "@/constants/all";
+
 import { IPostWithUserName } from "@/interfaces/objects";
+
 import { getFollowedPosts, getNotFollowedPosts } from "@/services/post";
 import { useUserStore } from "@/store/userStore";
+
 import { LuMoreVertical } from "react-icons/lu";
 import { AiOutlineLogout, AiOutlineUser } from "react-icons/ai";
-import Link from "next/link";
+import PostModal from "@/components/modals/PostModal";
 
 function Experiences() {
 	const router = useRouter();
@@ -21,7 +26,6 @@ function Experiences() {
 	const [isDataLoading, setIsDataLoading] = useState(true);
 	const [posts, setPosts] = useState<IPostWithUserName[]>([]);
 	const [currentExpPage, setCurrentExpPage] = useState<string>("");
-	const [postToEdit, setPostToEdit] = useState<IPostWithUserName | null>(null);
 
 	useEffect(() => {
 		async function getPostNotFollowedData(userId: number) {
@@ -74,7 +78,15 @@ function Experiences() {
 				) : (
 					<>
 						{posts.map((post) => {
-							return <Post postWithUserName={post} key={post.post.id} setPostToEdit={setPostToEdit} setPostComments={null}/>;
+							return (
+								<Post
+									key={post.post.id}
+									postWithUserName={post}
+									setPostComments={null}
+									setPostToEdit={null}
+									setPostToRemove={null}
+								/>
+							);
 						})}
 					</>
 				)}
@@ -98,7 +110,7 @@ function Experiences() {
 					</li>
 				</ul>
 			</details>
-			<PostModal postToEdit={postToEdit} changePostToEdit={setPostToEdit} />
+			<PostModal postToEdit={null} changePostToEdit={null} />
 		</div>
 	);
 }
