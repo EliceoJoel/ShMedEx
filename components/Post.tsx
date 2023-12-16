@@ -12,9 +12,8 @@ import avatarImage from "@/public/avatar.jpg";
 
 import { IPostProps } from "@/interfaces/objects";
 import { formatDate } from "@/utils/all";
-import { removePost } from "@/services/post";
 
-function Post({ postWithUserName, setPostToEdit, setPostComments }: IPostProps) {
+function Post({ postWithUserName, setPostComments, setPostToEdit, setPostToRemove }: IPostProps) {
 	const router = useRouter();
 	const pathname = usePathname();
 
@@ -22,18 +21,18 @@ function Post({ postWithUserName, setPostToEdit, setPostComments }: IPostProps) 
 		router.push(`/experiences/${postWithUserName.post.id}`);
 	};
 
-	const handleRemovePost = async () => {
-		// Removes from the UI
-		document.getElementById(postWithUserName.post.id.toString())?.remove();
-		//Removes from database
-		await removePost(postWithUserName.post.id);
+	const handleRemovePost = () => {
+		if(setPostToRemove !== null) {
+			setPostToRemove(postWithUserName);
+			document.getElementById("confirmationModal")?.showModal();
+		}
 	};
 
 	const handleEditPost = () => {
 		if (setPostToEdit !== null) {
 			setPostToEdit(postWithUserName);
+			document.getElementById("postModal")?.showModal();
 		}
-		document.getElementById("postModal")?.showModal();
 	};
 
 	return (

@@ -62,8 +62,9 @@ export interface IInteractionsProps {
 
 export interface IPostProps {
 	postWithUserName: IPostWithUserName;
-	setPostToEdit: Dispatch<SetStateAction<IPostWithUserName | null>> | null;
 	setPostComments: Dispatch<SetStateAction<ICommentFromDB[] | undefined>> | null;
+	setPostToEdit: Dispatch<SetStateAction<IPostWithUserName | null>> | null;
+	setPostToRemove: Dispatch<SetStateAction<IPostWithUserName | null>> | null;
 }
 
 export interface ICommentProps {

@@ -6,10 +6,11 @@ import { useRouter } from "next/navigation";
 
 import BackButton from "@/components/BackButton";
 import Post from "@/components/Post";
+import PostModal from "@/components/modals/PostModal";
+import ConfirmationModal from "@/components/modals/ConfirmationModal";
 
 import { useUserStore } from "@/store/userStore";
-import { getUserPosts } from "@/services/post";
-
+import { getUserPosts, removePost } from "@/services/post";
 
 import { IPostWithUserName } from "@/interfaces/objects";
 import avatarImage from "@/public/avatar.jpg";
@@ -19,6 +20,8 @@ function Profile() {
 	const router = useRouter();
 	const [myPosts, setMyPosts] = useState<IPostWithUserName[]>([]);
 	const [postsAreLoading, setPostsAreLoading] = useState(true);
+	const [postToEdit, setPostToEdit] = useState<IPostWithUserName | null>(null);
+	const [postToRemove, setPostToRemove] = useState<IPostWithUserName | null>(null);
 
 	useEffect(() => {
 		async function getMyPostsData(userId: number) {
@@ -34,6 +37,15 @@ function Profile() {
 			getMyPostsData(user.id);
 		}
 	}, []);
+
+	const removePostAction = async () => {
+		if (postToRemove !== null) {
+			// Removes from the UI
+			setMyPosts(myPosts.filter((post) => post.post.id !== postToRemove.post.id));
+			// Removes from database
+			await removePost(postToRemove.post.id);
+		}
+	};
 
 	return (
 		<div>
@@ -59,11 +71,19 @@ function Profile() {
 				) : (
 					<div className="flex flex-col items-center">
 						{myPosts.map((postWithUsername) => (
-							<Post postWithUserName={postWithUsername} setPostToEdit={null} key={postWithUsername.post.id} />
+							<Post
+								key={postWithUsername.post.id}
+								postWithUserName={postWithUsername}
+								setPostComments={null}
+								setPostToEdit={setPostToEdit}
+								setPostToRemove={setPostToRemove}
+							/>
 						))}
 					</div>
 				)}
 			</div>
+			<PostModal postToEdit={postToEdit} changePostToEdit={setPostToEdit} />
+			<ConfirmationModal confirmationText="¿Quieres eliminar este post?" yesAction={removePostAction} />
 		</div>
 	);
 }
