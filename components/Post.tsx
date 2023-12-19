@@ -22,7 +22,7 @@ function Post({ postWithUserName, setPostComments, setPostToEdit, setPostToRemov
 	};
 
 	const handleRemovePost = () => {
-		if(setPostToRemove !== null) {
+		if (setPostToRemove !== null) {
 			setPostToRemove(postWithUserName);
 			document.getElementById("confirmationModal")?.showModal();
 		}
@@ -36,7 +36,10 @@ function Post({ postWithUserName, setPostComments, setPostToEdit, setPostToRemov
 	};
 
 	return (
-		<div id={postWithUserName.post.id.toString()} className="flex flex-col gap-2 border-b border-b-gray-300 mb-4 max-w-3xl last:border-b-0 last:mb-0">
+		<div
+			id={postWithUserName.post.id.toString()}
+			className="flex flex-col gap-2 border-b border-b-gray-300 mb-4 max-w-3xl last:border-b-0 last:mb-0"
+		>
 			<div className="flex gap-2">
 				<div className="avatar">
 					<div className="w-8 mask mask-circle">
@@ -49,13 +52,8 @@ function Post({ postWithUserName, setPostComments, setPostToEdit, setPostToRemov
 						<span className="text-xs">{formatDate(new Date(postWithUserName.post.createdAt))}</span>
 					</div>
 					{pathname === "/profile" && (
-						<details className="dropdown dropdown-end">
-							<summary
-								className="btn btn-sm btn-circle btn-ghost"
-								onClick={(event) => {
-									event.stopPropagation();
-								}}
-							>
+						<details id={`actionsPost${postWithUserName.post.id}`} className="dropdown dropdown-end">
+							<summary className="btn btn-sm btn-circle btn-ghost">
 								<GrMore />
 							</summary>
 							<ul className="p-2 shadow menu dropdown-content z-[1] rounded-box w-24 bg-white">

@@ -85,3 +85,15 @@ export interface ICommentFromDB {
 export interface INewCommentModalProps {
 	setPostComments: Dispatch<SetStateAction<ICommentFromDB[] | undefined>> | null;
 }
+
+export interface IPostModalProps {
+	postToEdit: IPostWithUserName | null;
+	changePostToEdit: Dispatch<SetStateAction<IPostWithUserName | null>> | null;
+	setMyPosts: Dispatch<SetStateAction<IPostWithUserName[]>> | null;
+}
+
+export interface IConfirmationModalProps {
+	confirmationText: string;
+	yesAction: any;
+	cancelAction: any;
+}

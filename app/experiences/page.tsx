@@ -110,7 +110,7 @@ function Experiences() {
 					</li>
 				</ul>
 			</details>
-			<PostModal postToEdit={null} changePostToEdit={null} />
+			<PostModal postToEdit={null} changePostToEdit={null} setMyPosts={null} />
 		</div>
 	);
 }
