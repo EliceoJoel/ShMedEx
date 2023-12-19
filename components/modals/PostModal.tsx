@@ -1,22 +1,16 @@
 "use client";
 
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 
 import { NewPost } from "@/interfaces/inputs";
-import { IPostWithUserName } from "@/interfaces/objects";
+import { IPostModalProps } from "@/interfaces/objects";
 import { NewPostSchema, getYupSchema } from "@/yup/schemas";
 import { useUserStore } from "@/store/userStore";
-import { createPost } from "@/services/post";
+import { createPost, getImageUrl, getUserPosts, updatePost } from "@/services/post";
 
-function PostModal({
-	postToEdit,
-	changePostToEdit,
-}: {
-	postToEdit: IPostWithUserName | null;
-	changePostToEdit: Dispatch<SetStateAction<IPostWithUserName | null>> | null;
-}) {
+function PostModal({ postToEdit, changePostToEdit, setMyPosts }: IPostModalProps) {
 	const {
 		register,
 		handleSubmit,
@@ -39,20 +33,45 @@ function PostModal({
 		// loading started
 		setIsisPublishing(true);
 
-		//create post
-		if (loggedUser !== null) {
+		if (postToEdit !== null && changePostToEdit != null) {
+			// Update a post
+			let imageUrlUpdated;
+			if (data.image.length === 0) {
+				imageUrlUpdated = postToEdit.post.image;
+			} else {
+				imageUrlUpdated = await getImageUrl(data.image);
+			}
+			await updatePost(postToEdit.post.id, data.post, imageUrlUpdated);
+			changePostToEdit(null);
+
+			// Update all my post with the changes
+			if (loggedUser !== null && setMyPosts != null) {
+				const data = await getUserPosts(loggedUser.id);
+				setMyPosts(data);
+			}
+
+			// Close actions dropdown
+			closePostActionsDropdown();
+		} else if (loggedUser !== null) {
+			// Create a post
 			await createPost(data.post, data.image, loggedUser.id);
 		}
 
-		// clear fields
+		// Clear fields
 		reset();
 
 		// Loading finished
 		setIsisPublishing(false);
 
-		//close modal
+		// Close modal
 		document.getElementById("postModal")?.close();
 	});
+
+	const closePostActionsDropdown = () => {
+		if (postToEdit !== null) {
+			document.getElementById(`actionsPost${postToEdit.post.id}`)?.removeAttribute("open");
+		}
+	};
 
 	return (
 		<dialog id="postModal" className="modal modal-bottom sm:modal-middle">
@@ -74,7 +93,13 @@ function PostModal({
 					</div>
 					{postToEdit != null && (
 						<div className="mb-4">
-							<Image alt="Image of editing post" src={postToEdit.post.image as string} />
+							<Image
+								alt="Image of editing post"
+								src={postToEdit.post.image as string}
+								width={768}
+								height={768}
+								priority={true}
+							/>
 							<label>Selecciona una nueva imagen para reemplazar el actual</label>
 						</div>
 					)}
@@ -97,10 +122,11 @@ function PostModal({
 							type="button"
 							onClick={() => {
 								document.getElementById("postModal")?.close();
-								if(changePostToEdit !== null) {
+								if (changePostToEdit !== null) {
 									changePostToEdit(null);
 								}
 								reset();
+								closePostActionsDropdown();
 							}}
 						>
 							Cerrar
@@ -115,10 +141,11 @@ function PostModal({
 			<form method="dialog" className="modal-backdrop">
 				<button
 					onClick={() => {
-						if(changePostToEdit !== null) {
+						if (changePostToEdit !== null) {
 							changePostToEdit(null);
 						}
 						reset();
+						closePostActionsDropdown();
 					}}
 				>
 					close

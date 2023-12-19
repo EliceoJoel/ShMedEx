@@ -25,7 +25,26 @@ export async function createPost(postText: string, postImage: FileList, userId: 
 	}
 }
 
-async function getImageUrl(imageFileList: FileList) {
+export async function updatePost(postId: number, postText: string, postImageUrl: string) {
+	try {
+		await fetch(process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL + "/api/v1/post/" + postId, {
+			method: "PUT",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				content: postText,
+				image: postImageUrl,
+				updatedAt: new Date(),
+			}),
+		}).catch((error) => {
+			console.error(error);
+		});
+	} catch (error) {
+		console.error(error);
+		throw error;
+	}
+}
+
+export async function getImageUrl(imageFileList: FileList) {
 	try {
 		if (imageFileList.length > 0) {
 			const formData = new FormData();

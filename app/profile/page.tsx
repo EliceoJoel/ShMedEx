@@ -44,6 +44,18 @@ function Profile() {
 			setMyPosts(myPosts.filter((post) => post.post.id !== postToRemove.post.id));
 			// Removes from database
 			await removePost(postToRemove.post.id);
+			// Close actions dropdown
+			closePostActionsDropdown();
+		}
+	};
+
+	const cancelRemoveAction = () => {
+		closePostActionsDropdown();
+	};
+
+	const closePostActionsDropdown = () => {
+		if (postToRemove !== null) {
+			document.getElementById(`actionsPost${postToRemove.post.id}`)?.removeAttribute("open");
 		}
 	};
 
@@ -82,8 +94,12 @@ function Profile() {
 					</div>
 				)}
 			</div>
-			<PostModal postToEdit={postToEdit} changePostToEdit={setPostToEdit} />
-			<ConfirmationModal confirmationText="¿Quieres eliminar este post?" yesAction={removePostAction} />
+			<PostModal postToEdit={postToEdit} changePostToEdit={setPostToEdit} setMyPosts={setMyPosts} />
+			<ConfirmationModal
+				confirmationText="¿Quieres eliminar este post?"
+				yesAction={removePostAction}
+				cancelAction={cancelRemoveAction}
+			/>
 		</div>
 	);
 }

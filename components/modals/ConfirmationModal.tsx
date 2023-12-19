@@ -1,6 +1,8 @@
 "use client";
 
-function ConfirmationModal({ confirmationText, yesAction }: { confirmationText: string; yesAction: any }) {
+import { IConfirmationModalProps } from "@/interfaces/objects";
+
+function ConfirmationModal({ confirmationText, yesAction, cancelAction }: IConfirmationModalProps) {
 	return (
 		<dialog id="confirmationModal" className="modal">
 			<div className="modal-box">
@@ -10,7 +12,8 @@ function ConfirmationModal({ confirmationText, yesAction }: { confirmationText: 
 					<button
 						className="btn"
 						onClick={() => {
-							document.getElementById("confirmation_modal")?.close();
+							cancelAction();
+							document.getElementById("confirmationModal")?.close();
 						}}
 					>
 						Cancelar
@@ -27,7 +30,13 @@ function ConfirmationModal({ confirmationText, yesAction }: { confirmationText: 
 				</div>
 			</div>
 			<form method="dialog" className="modal-backdrop">
-				<button>close</button>
+				<button
+					onClick={() => {
+						cancelAction();
+					}}
+				>
+					close
+				</button>
 			</form>
 		</dialog>
 	);
