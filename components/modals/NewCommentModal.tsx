@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import toast from "react-hot-toast";
 
 import { addCommentToPost, getPostComments } from "@/services/post";
 
@@ -13,6 +12,7 @@ import { NewComment } from "@/interfaces/inputs";
 import { INewCommentModalProps } from "@/interfaces/objects";
 
 import { NewCommentSchema, getYupSchema } from "@/yup/schemas";
+import { toast } from "sonner";
 
 function NewCommentModal({ setPostComments }: INewCommentModalProps) {
 	const { postId } = usePostIdStore((state) => state);
@@ -43,12 +43,13 @@ function NewCommentModal({ setPostComments }: INewCommentModalProps) {
 			document.getElementById("newCommentModal")?.close();
 
 			// Show sucess toast
-			toast.success("Comment added successfully!");
+			toast.success("Comentario agregado exitosamente!");
 
 			// Clear comment field
 			reset();
 		} catch (error) {
-			toast.error("Error adding new comment");
+			// Show error toast
+			toast.error("Ocurrio un error al agregar el comentario");
 		}
 	});
 

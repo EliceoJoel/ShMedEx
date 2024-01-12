@@ -1,14 +1,24 @@
 "use client";
 
+import Link from "next/link";
+
 import { TbHealthRecognition } from "react-icons/tb";
-import { AiOutlinePlus } from "react-icons/ai";
+import { AiOutlineLogout, AiOutlinePlus, AiOutlineUser } from "react-icons/ai";
 import { HiOutlineSwitchHorizontal } from "react-icons/hi";
 import { ExpPage } from "@/constants/all";
 import { INavBarProps } from "@/interfaces/objects";
+import { useUserStore } from "@/store/userStore";
 
 function Navbar({ currentExpPage, setCurrentExpPage }: INavBarProps) {
+	const { user, setUser } = useUserStore((user) => user);
+
 	const handleSwitch = (nextExpPage: string) => {
 		setCurrentExpPage(nextExpPage);
+	};
+
+	const handleLogout = () => {
+		setUser(null);
+		localStorage.removeItem("token");
 	};
 
 	return (
@@ -50,7 +60,7 @@ function Navbar({ currentExpPage, setCurrentExpPage }: INavBarProps) {
 					Para ti
 				</button>
 			</div>
-			<div className="navbar-end">
+			<div className="navbar-end gap-2">
 				<button
 					className="btn btn-primary btn-circle md:hidden"
 					onClick={() => document.getElementById("postModal")?.showModal()}
@@ -63,6 +73,32 @@ function Navbar({ currentExpPage, setCurrentExpPage }: INavBarProps) {
 				>
 					<AiOutlinePlus className="h-6 w-6" /> Contar experiencia
 				</button>
+				<details className="dropdown dropdown-end">
+					<summary className="btn btn-circle">
+						<div className="avatar placeholder text-base">
+							<div className="bg-neutral text-neutral-content rounded-full w-12">
+								<span>
+									{user != undefined &&
+										user.name.charAt(0).toUpperCase() + user.lastName.charAt(0).toUpperCase()}
+								</span>
+							</div>
+						</div>
+					</summary>
+					<ul className="p-2 mt-2 shadow menu dropdown-content bg-white rounded-box w-44">
+						<li>
+							<Link href="/profile">
+								<AiOutlineUser className="h-6 w-6" />
+								Mi perfil
+							</Link>
+						</li>
+						<li>
+							<button onClick={handleLogout}>
+								<AiOutlineLogout className="h-6 w-6" />
+								Cerrar sesión
+							</button>
+						</li>
+					</ul>
+				</details>
 			</div>
 		</div>
 	);

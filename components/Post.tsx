@@ -38,12 +38,15 @@ function Post({ postWithUserName, setPostComments, setPostToEdit, setPostToRemov
 	return (
 		<div
 			id={postWithUserName.post.id.toString()}
-			className="flex flex-col gap-2 border-b border-b-gray-300 mb-4 max-w-3xl last:border-b-0 last:mb-0"
+			className="flex flex-col gap-2 border-b border-b-gray-300 mb-4 w-full max-w-3xl last:border-b-0 last:mb-0"
 		>
 			<div className="flex gap-2">
-				<div className="avatar">
-					<div className="w-8 mask mask-circle">
-						<Image src={avatarImage} alt="user profile avatar" />
+				<div className="avatar placeholder">
+					<div className="bg-neutral text-neutral-content rounded-full w-9">
+						<span className="text-xs">
+							{postWithUserName.userName.split(" ")[0].charAt(0).toUpperCase() +
+								postWithUserName.userName.split(" ")[1].charAt(0).toUpperCase()}
+						</span>
 					</div>
 				</div>
 				<div className="flex justify-between w-full">

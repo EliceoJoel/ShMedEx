@@ -14,6 +14,7 @@ import { getUserPosts, removePost } from "@/services/post";
 
 import { IPostWithUserName } from "@/interfaces/objects";
 import avatarImage from "@/public/avatar.jpg";
+import NoData from "@/components/NoData";
 
 function Profile() {
 	const { user } = useUserStore((user) => user);
@@ -82,15 +83,19 @@ function Profile() {
 					</div>
 				) : (
 					<div className="flex flex-col items-center">
-						{myPosts.map((postWithUsername) => (
-							<Post
-								key={postWithUsername.post.id}
-								postWithUserName={postWithUsername}
-								setPostComments={null}
-								setPostToEdit={setPostToEdit}
-								setPostToRemove={setPostToRemove}
-							/>
-						))}
+						{myPosts.length > 0 ? (
+							myPosts.map((postWithUsername) => (
+								<Post
+									key={postWithUsername.post.id}
+									postWithUserName={postWithUsername}
+									setPostComments={null}
+									setPostToEdit={setPostToEdit}
+									setPostToRemove={setPostToRemove}
+								/>
+							))
+						) : (
+							<NoData />
+						)}
 					</div>
 				)}
 			</div>

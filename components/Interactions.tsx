@@ -70,11 +70,11 @@ function Interactions({
 			const postIsAlreadyLiked = likeButton?.firstElementChild?.classList.contains("text-secondary");
 			if (postIsAlreadyLiked) {
 				likeButton?.firstElementChild?.classList.remove("text-secondary");
-				numberOfLikesDesktopSpan.innerText = (currentNumberOfLikes - 1).toString() + " Comentarios";
+				numberOfLikesDesktopSpan.innerText = (currentNumberOfLikes - 1).toString() + " Me gustas";
 				numberOfLikesMobileSpan.innerText = (currentNumberOfLikes - 1).toString();
 			} else {
 				likeButton?.firstElementChild?.classList.add("text-secondary");
-				numberOfLikesDesktopSpan.innerText = (currentNumberOfLikes + 1).toString() + " Comentarios";
+				numberOfLikesDesktopSpan.innerText = (currentNumberOfLikes + 1).toString() + " Me gustas";
 				numberOfLikesMobileSpan.innerText = (currentNumberOfLikes + 1).toString();
 			}
 		}
