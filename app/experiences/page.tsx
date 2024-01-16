@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Link from "next/link";
 
 import Navbar from "@/components/Navbar";
 import Post from "@/components/Post";
@@ -14,14 +13,13 @@ import { IPostWithUserName } from "@/interfaces/objects";
 import { getFollowedPosts, getNotFollowedPosts } from "@/services/post";
 import { useUserStore } from "@/store/userStore";
 
-import { LuMoreVertical } from "react-icons/lu";
-import { AiOutlineLogout, AiOutlineUser } from "react-icons/ai";
 import PostModal from "@/components/modals/PostModal";
+import NoData from "@/components/NoData";
 
 function Experiences() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
-	const { user, setUser } = useUserStore((user) => user);
+	const { user } = useUserStore((user) => user);
 
 	const [isDataLoading, setIsDataLoading] = useState(true);
 	const [posts, setPosts] = useState<IPostWithUserName[]>([]);
@@ -60,11 +58,6 @@ function Experiences() {
 		}
 	}, [currentExpPage, user]);
 
-	const handleLogout = () => {
-		setUser(null);
-		localStorage.removeItem("token");
-	};
-
 	return (
 		<div>
 			<div className="flex justify-center w-full">
@@ -77,39 +70,24 @@ function Experiences() {
 					</div>
 				) : (
 					<>
-						{posts.map((post) => {
-							return (
-								<Post
-									key={post.post.id}
-									postWithUserName={post}
-									setPostComments={null}
-									setPostToEdit={null}
-									setPostToRemove={null}
-								/>
-							);
-						})}
+						{posts.length > 0 ? (
+							posts.map((post) => {
+								return (
+									<Post
+										key={post.post.id}
+										postWithUserName={post}
+										setPostComments={null}
+										setPostToEdit={null}
+										setPostToRemove={null}
+									/>
+								);
+							})
+						) : (
+							<NoData />
+						)}
 					</>
 				)}
 			</div>
-			<details className="dropdown dropdown-top dropdown-end fixed bottom-2 right-2 md:bottom-8 md:right-20">
-				<summary className="btn btn-circle btn-primary">
-					<LuMoreVertical className="h-6 w-6" />
-				</summary>
-				<ul className="p-2 shadow menu dropdown-content bg-white rounded-box w-44">
-					<li>
-						<Link href="/profile">
-							<AiOutlineUser className="h-6 w-6" />
-							Mi perfil
-						</Link>
-					</li>
-					<li>
-						<button onClick={handleLogout}>
-							<AiOutlineLogout className="h-6 w-6" />
-							Cerrar sesión
-						</button>
-					</li>
-				</ul>
-			</details>
 			<PostModal postToEdit={null} changePostToEdit={null} setMyPosts={null} />
 		</div>
 	);

@@ -7,12 +7,12 @@ export async function createPost(postText: string, postImage: FileList, userId: 
 			body: JSON.stringify({
 				content: postText,
 				image: imageUrl,
-				likes: 0,
 				user: {
 					id: userId,
 				},
 				commments: [],
 				usersWhoFollows: [],
+				userWhoLikes: [],
 				createdAt: new Date(),
 				updatedAt: new Date(),
 			}),

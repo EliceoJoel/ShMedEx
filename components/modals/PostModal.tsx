@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
+import { toast } from 'sonner';
 
 import { NewPost } from "@/interfaces/inputs";
 import { IPostModalProps } from "@/interfaces/objects";
@@ -55,6 +56,7 @@ function PostModal({ postToEdit, changePostToEdit, setMyPosts }: IPostModalProps
 		} else if (loggedUser !== null) {
 			// Create a post
 			await createPost(data.post, data.image, loggedUser.id);
+			toast.success("Experiencia publicada exitosamente!");
 		}
 
 		// Clear fields
