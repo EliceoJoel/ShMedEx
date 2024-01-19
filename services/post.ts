@@ -1,20 +1,18 @@
-export async function createPost(postText: string, postImage: FileList, userId: number) {
+export async function createPost(postDay: number, postContent: string, postImage: FileList, userId: number) {
 	try {
 		const imageUrl = await getImageUrl(postImage);
 		await fetch(process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL + "/api/v1/post", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({
-				content: postText,
-				image: imageUrl,
 				user: {
 					id: userId,
 				},
-				commments: [],
-				usersWhoFollows: [],
-				userWhoLikes: [],
-				createdAt: new Date(),
-				updatedAt: new Date(),
+				postDay: {
+					day: postDay,
+					content: postContent,
+					image: imageUrl,
+				},
 			}),
 		}).catch((error) => {
 			console.error(error);
@@ -226,13 +224,10 @@ export async function toggleFollow(postId: number, userId: number) {
 
 export async function removePost(postId: number) {
 	try {
-		const response = await fetch(
-			`${process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL}/api/v1/post/${postId}`,
-			{
-				method: "DELETE",
-				headers: { "Content-Type": "application/json" },
-			}
-		);
+		const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL}/api/v1/post/${postId}`, {
+			method: "DELETE",
+			headers: { "Content-Type": "application/json" },
+		});
 		if (!response.ok) {
 			alert("Error when user toggle like in post");
 		}
@@ -240,5 +235,3 @@ export async function removePost(postId: number) {
 		console.error(error);
 	}
 }
-
-

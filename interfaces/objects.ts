@@ -2,6 +2,11 @@ import { Dispatch, SetStateAction } from "react";
 
 export interface IPost {
 	id: number;
+}
+
+export interface IPostDay {
+	id: number;
+	day: number;
 	content: string;
 	image: string | null;
 	createdAt: string;
@@ -44,6 +49,7 @@ export interface IPostWithUserName {
 	numberOfLikes: number;
 	isFollowedByUser: boolean;
 	isLikedByUser: boolean;
+	postDays: IPostDay[];
 }
 
 export interface INavBarProps {

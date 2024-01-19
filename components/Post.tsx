@@ -8,8 +8,6 @@ import { GrMore } from "react-icons/gr";
 import Interactions from "./Interactions";
 import NewCommentModal from "./modals/NewCommentModal";
 
-import avatarImage from "@/public/avatar.jpg";
-
 import { IPostProps } from "@/interfaces/objects";
 import { formatDate } from "@/utils/all";
 
@@ -42,7 +40,7 @@ function Post({ postWithUserName, setPostComments, setPostToEdit, setPostToRemov
 		>
 			<div className="flex gap-2">
 				<div className="avatar placeholder">
-					<div className="bg-neutral text-neutral-content rounded-full w-9">
+					<div className="bg-neutral text-neutral-content rounded-full w-9 h-9">
 						<span className="text-xs">
 							{postWithUserName.userName.split(" ")[0].charAt(0).toUpperCase() +
 								postWithUserName.userName.split(" ")[1].charAt(0).toUpperCase()}
@@ -52,29 +50,41 @@ function Post({ postWithUserName, setPostComments, setPostToEdit, setPostToRemov
 				<div className="flex justify-between w-full">
 					<div className="flex flex-col">
 						<span className="text-sm font-semibold">{postWithUserName.userName}</span>
-						<span className="text-xs">{formatDate(new Date(postWithUserName.post.createdAt))}</span>
+						<span className="text-xs">{formatDate(new Date(postWithUserName.postDays[0].createdAt))}</span>
 					</div>
-					{pathname === "/profile" && (
-						<details id={`actionsPost${postWithUserName.post.id}`} className="dropdown dropdown-end">
-							<summary className="btn btn-sm btn-circle btn-ghost">
-								<GrMore />
-							</summary>
-							<ul className="p-2 shadow menu dropdown-content z-[1] rounded-box w-24 bg-white">
-								<li>
-									<button onClick={handleEditPost}>Editar</button>
-								</li>
-								<li>
-									<button onClick={handleRemovePost}>Eliminar</button>
-								</li>
-							</ul>
-						</details>
-					)}
+					<div className="flex gap-2">
+						<button className="btn btn-neutral btn-sm normal-case">Ver mas dias</button>
+						{pathname === "/profile" && (
+							<details id={`actionsPost${postWithUserName.post.id}`} className="dropdown dropdown-end">
+								<summary className="btn btn-sm btn-circle btn-ghost">
+									<GrMore />
+								</summary>
+								<ul className="p-2 shadow menu dropdown-content z-[1] rounded-box w-24 bg-white">
+									<li>
+										<button onClick={handleEditPost}>Editar</button>
+									</li>
+									<li>
+										<button onClick={handleRemovePost}>Eliminar</button>
+									</li>
+								</ul>
+							</details>
+						)}
+					</div>
 				</div>
 			</div>
-			<div className="ml-10 hover:cursor-pointer" onClick={handlePostClick}>
-				<p className="text-sm">{postWithUserName.post.content}</p>
-				{postWithUserName.post.image != null && (
-					<Image src={postWithUserName.post.image} alt="The post image" width={768} height={768} priority={true} />
+			<div className="ml-10">
+				<p className="text-sm">
+					<span className="font-bold">Dia {postWithUserName.postDays[0].day}: </span>
+					{postWithUserName.postDays[0].content}
+				</p>
+				{postWithUserName.postDays[0].image !== null && (
+					<Image
+						src={postWithUserName.postDays[0].image}
+						alt="The post image"
+						width={768}
+						height={768}
+						priority={true}
+					/>
 				)}
 			</div>
 			<Interactions
