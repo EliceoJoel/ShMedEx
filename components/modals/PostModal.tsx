@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
-import { toast } from 'sonner';
+import { toast } from "sonner";
 
 import { NewPost } from "@/interfaces/inputs";
 import { IPostModalProps } from "@/interfaces/objects";
@@ -26,7 +26,7 @@ function PostModal({ postToEdit, changePostToEdit, setMyPosts }: IPostModalProps
 
 	useEffect(() => {
 		if (postToEdit != null) {
-			setValue("post", postToEdit.post.content);
+			setValue("post", postToEdit.postDays[0].content);
 		}
 	}, [postToEdit]);
 
@@ -38,7 +38,7 @@ function PostModal({ postToEdit, changePostToEdit, setMyPosts }: IPostModalProps
 			// Update a post
 			let imageUrlUpdated;
 			if (data.image.length === 0) {
-				imageUrlUpdated = postToEdit.post.image;
+				imageUrlUpdated = postToEdit.postDays[0].image;
 			} else {
 				imageUrlUpdated = await getImageUrl(data.image);
 			}
@@ -55,7 +55,7 @@ function PostModal({ postToEdit, changePostToEdit, setMyPosts }: IPostModalProps
 			closePostActionsDropdown();
 		} else if (loggedUser !== null) {
 			// Create a post
-			await createPost(data.post, data.image, loggedUser.id);
+			await createPost(data.postDay, data.post, data.image, loggedUser.id);
 			toast.success("Experiencia publicada exitosamente!");
 		}
 
@@ -80,7 +80,26 @@ function PostModal({ postToEdit, changePostToEdit, setMyPosts }: IPostModalProps
 			<div className="modal-box">
 				<h3 className="font-bold text-lg text-center mb-4">Nueva experiencia</h3>
 				<form onSubmit={handlePublish}>
-					<div className="form-control w-full mb-4">
+					<label className="form-control mb-4">
+						<div className="label">
+							<span className="label-text-alt text-base">Dia de la experiencia</span>
+						</div>
+						<input
+							autoComplete="off"
+							className="input input-bordered input-primary w-32"
+							type="number"
+							{...register("postDay")}
+						/>
+						{errors.post && (
+							<div className="label">
+								<span className="label-text-alt text-error">{errors.postDay?.message}</span>
+							</div>
+						)}
+					</label>
+					<label className="form-control w-full mb-4">
+						<div className="label">
+							<span className="label-text-alt text-base">Descripcion de experiencia</span>
+						</div>
 						<textarea
 							autoComplete="off"
 							className="textarea textarea-primary w-full"
@@ -88,16 +107,16 @@ function PostModal({ postToEdit, changePostToEdit, setMyPosts }: IPostModalProps
 							{...register("post")}
 						></textarea>
 						{errors.post && (
-							<label className="label">
+							<div className="label">
 								<span className="label-text-alt text-error">{errors.post.message}</span>
-							</label>
+							</div>
 						)}
-					</div>
+					</label>
 					{postToEdit != null && (
 						<div className="mb-4">
 							<Image
 								alt="Image of editing post"
-								src={postToEdit.post.image as string}
+								src={postToEdit.postDays[0].image as string}
 								width={768}
 								height={768}
 								priority={true}
@@ -105,7 +124,10 @@ function PostModal({ postToEdit, changePostToEdit, setMyPosts }: IPostModalProps
 							<label>Selecciona una nueva imagen para reemplazar el actual</label>
 						</div>
 					)}
-					<div className="form-control w-full mb-4">
+					<label className="form-control w-full mb-4">
+						<div className="label">
+							<span className="label-text-alt text-base">Imagen de experiencia</span>
+						</div>
 						<input
 							type="file"
 							accept="image/png, image/jpeg, image/jpg, image/svg, image/webp"
@@ -113,11 +135,11 @@ function PostModal({ postToEdit, changePostToEdit, setMyPosts }: IPostModalProps
 							{...register("image")}
 						/>
 						{errors.image && (
-							<label className="label">
+							<div className="label">
 								<span className="label-text-alt text-error">{errors.image.message}</span>
-							</label>
+							</div>
 						)}
-					</div>
+					</label>
 					<div className="flex justify-end gap-4">
 						<button
 							className="btn"

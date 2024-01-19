@@ -13,7 +13,6 @@ import { useUserStore } from "@/store/userStore";
 import { getUserPosts, removePost } from "@/services/post";
 
 import { IPostWithUserName } from "@/interfaces/objects";
-import avatarImage from "@/public/avatar.jpg";
 import NoData from "@/components/NoData";
 
 function Profile() {
@@ -68,7 +67,11 @@ function Profile() {
 				</div>
 			</div>
 			<div className="flex flex-col items-center gap-4">
-				<Image src={avatarImage} alt="user profile photo" className="rounded-full w-20 h-20" />
+				<div className="avatar placeholder">
+					<div className="bg-neutral text-neutral-content rounded-full w-14 h-14">
+						<span className="text-2xl">{user !== null && (user.name.charAt(0).toUpperCase() + user.lastName.charAt(0).toUpperCase())}</span>
+					</div>
+				</div>
 				<h1 className="font-bold text-2xl md:text-3xl">{user?.name + " " + user?.lastName}</h1>
 			</div>
 			<div className="p-4">

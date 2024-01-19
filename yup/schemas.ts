@@ -21,8 +21,15 @@ export const SignUpSchema = yup.object().shape({
 });
 
 export const NewPostSchema = yup.object().shape({
-	post: yup.string().required("La descripcion de tu experiencia es requerida"),
-	image: yup.mixed().test("is-valid-image", "Image uploaded is not valid", (value: any) => isValidNoRequiredImageType(value)),
+	postDay: yup
+		.number()
+		.typeError("El dia de la experiencia es requerida")
+		.required("El dia de la experiencia es requerida")
+		.positive("El dia de la experiencia debe ser mayor a cero"),
+	post: yup.string().required("La descripcion de la experiencia es requerida"),
+	image: yup
+		.mixed()
+		.test("is-valid-image", "Image uploaded is not valid", (value: any) => isValidNoRequiredImageType(value)),
 });
 
 export const NewCommentSchema = yup.object().shape({

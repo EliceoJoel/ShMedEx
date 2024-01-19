@@ -19,6 +19,7 @@ export interface IUserToRegister {
 }
 
 export interface NewPost {
+	postDay: number;
 	post: string;
 	image: FileList;
 }
