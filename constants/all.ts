@@ -11,3 +11,10 @@ export enum AuthRequestType {
 	LOGIN,
 	REGSITER,
 }
+
+export enum UserPostActions {
+	ADD_POST_DAY,
+	EDIT_POST_DAY,
+	DELETE_POST_DAY,
+	DELETE_POST
+}

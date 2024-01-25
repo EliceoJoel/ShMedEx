@@ -1,3 +1,5 @@
+import { IDayToAdd} from "@/interfaces/objects";
+
 export async function createPost(postDay: number, postContent: string, postImage: FileList, userId: number) {
 	try {
 		const imageUrl = await getImageUrl(postImage);
@@ -108,13 +110,14 @@ export async function getFollowedPosts(userId: number) {
 	}
 }
 
-export async function getPostById(postId: string, userId: number) {
+export async function getPostById(postId: number, userId: number, postDay: number) {
 	try {
 		const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL + "/api/v1/post/" + postId, {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({
-				id: userId,
+				userId: userId,
+				postDay: postDay,
 			}),
 		});
 		const data = await response.json();
@@ -233,5 +236,29 @@ export async function removePost(postId: number) {
 		}
 	} catch (error) {
 		console.error(error);
+	}
+}
+
+export async function addPostDay(postId: number, postDay: IDayToAdd) {
+	try {
+		const imageUrl = await getImageUrl(postDay.image);
+		console.log(imageUrl);
+		await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL}/api/v1/post/day`, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				postId: postId,
+				postDay: {
+					day: postDay.day,
+					content: postDay.content,
+					image: imageUrl
+				}
+			}),
+		}).catch((error) => {
+			console.error(error);
+		});
+	} catch (error) {
+		console.error(error);
+		throw error;
 	}
 }

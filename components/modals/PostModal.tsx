@@ -6,12 +6,13 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 import { NewPost } from "@/interfaces/inputs";
-import { IPostModalProps } from "@/interfaces/objects";
+import { IPostModalProps, IPostWithUserName } from "@/interfaces/objects";
 import { NewPostSchema, getYupSchema } from "@/yup/schemas";
 import { useUserStore } from "@/store/userStore";
-import { createPost, getImageUrl, getUserPosts, updatePost } from "@/services/post";
+import { addPostDay, createPost, getImageUrl, getPostById, updatePost } from "@/services/post";
+import { UserPostActions } from "@/constants/all";
 
-function PostModal({ postToEdit, changePostToEdit, setMyPosts }: IPostModalProps) {
+function PostModal({ postAction, postToEdit, changePostToEdit, setMyPost }: IPostModalProps) {
 	const {
 		register,
 		handleSubmit,
@@ -34,31 +35,23 @@ function PostModal({ postToEdit, changePostToEdit, setMyPosts }: IPostModalProps
 		// loading started
 		setIsisPublishing(true);
 
-		if (postToEdit !== null && changePostToEdit != null) {
-			// Update a post
-			let imageUrlUpdated;
-			if (data.image.length === 0) {
-				imageUrlUpdated = postToEdit.postDays[0].image;
-			} else {
-				imageUrlUpdated = await getImageUrl(data.image);
+		if (postAction !== null) {
+			switch (postAction.action) {
+				case UserPostActions.ADD_POST_DAY:
+					await handleAddPostDay(postAction.post, data);
+					break;
+				case UserPostActions.EDIT_POST_DAY:
+					break;
+				case UserPostActions.DELETE_POST_DAY:
+					break;
+				case UserPostActions.DELETE_POST:
+					break;
 			}
-			await updatePost(postToEdit.post.id, data.post, imageUrlUpdated);
-			changePostToEdit(null);
-
-			// Update all my post with the changes
-			if (loggedUser !== null && setMyPosts != null) {
-				const data = await getUserPosts(loggedUser.id);
-				setMyPosts(data);
-			}
-
-			// Close actions dropdown
-			closePostActionsDropdown();
 		} else if (loggedUser !== null) {
 			// Create a post
 			await createPost(data.postDay, data.post, data.image, loggedUser.id);
 			toast.success("Experiencia publicada exitosamente!");
 		}
-
 		// Clear fields
 		reset();
 
@@ -68,6 +61,34 @@ function PostModal({ postToEdit, changePostToEdit, setMyPosts }: IPostModalProps
 		// Close modal
 		document.getElementById("postModal")?.close();
 	});
+
+	const handleAddPostDay = async (postToAddDay: IPostWithUserName, data: NewPost) => {
+		await addPostDay(postToAddDay.post.id, { day: data.postDay, content: data.post, image: data.image });
+		toast.success("Experiencia del dia agregado al post exitosamente!");
+	};
+
+	// const handleEditPostDay = async () => {
+	// 	if (postToEdit !== null && changePostToEdit != null) {
+	// 		// Update a post
+	// 		let imageUrlUpdated;
+	// 		if (data.image.length === 0) {
+	// 			imageUrlUpdated = postToEdit.postDays[0].image;
+	// 		} else {
+	// 			imageUrlUpdated = await getImageUrl(data.image);
+	// 		}
+	// 		await updatePost(postToEdit.post.id, data.post, imageUrlUpdated);
+	// 		changePostToEdit(null);
+
+	// 		// Update all my post with the changes
+	// 		if (loggedUser !== null && setMyPost != null) {
+	// 			const data = await getPostById(postToEdit.post.id, loggedUser.id, 1);
+	// 			setMyPost(data);
+	// 		}
+
+	// 		// Close actions dropdown
+	// 		closePostActionsDropdown();
+	// 	}
+	// }
 
 	const closePostActionsDropdown = () => {
 		if (postToEdit !== null) {

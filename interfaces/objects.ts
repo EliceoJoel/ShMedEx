@@ -1,3 +1,4 @@
+import { UserPostActions } from "@/constants/all";
 import { Dispatch, SetStateAction } from "react";
 
 export interface IPost {
@@ -49,6 +50,7 @@ export interface IPostWithUserName {
 	numberOfLikes: number;
 	isFollowedByUser: boolean;
 	isLikedByUser: boolean;
+	isUserPost: boolean;
 	postDays: IPostDay[];
 }
 
@@ -71,6 +73,7 @@ export interface IPostProps {
 	setPostComments: Dispatch<SetStateAction<ICommentFromDB[] | undefined>> | null;
 	setPostToEdit: Dispatch<SetStateAction<IPostWithUserName | null>> | null;
 	setPostToRemove: Dispatch<SetStateAction<IPostWithUserName | null>> | null;
+	setPostAction: Dispatch<SetStateAction<IPostAction | null>> | null;
 }
 
 export interface ICommentProps {
@@ -84,7 +87,7 @@ export interface ICommentFromDB {
 		id: number;
 		content: string;
 		createdAt: string;
-	},
+	};
 	userWhoCommented: string;
 }
 
@@ -93,13 +96,29 @@ export interface INewCommentModalProps {
 }
 
 export interface IPostModalProps {
+	postAction: IPostAction | null;
 	postToEdit: IPostWithUserName | null;
 	changePostToEdit: Dispatch<SetStateAction<IPostWithUserName | null>> | null;
-	setMyPosts: Dispatch<SetStateAction<IPostWithUserName[]>> | null;
+	setMyPost: Dispatch<SetStateAction<IPostWithUserName | null>> | null;
 }
 
 export interface IConfirmationModalProps {
 	confirmationText: string;
 	yesAction: any;
 	cancelAction: any;
+}
+
+export interface IPostAction {
+	post: IPostWithUserName;
+	action:
+		| UserPostActions.ADD_POST_DAY
+		| UserPostActions.EDIT_POST_DAY
+		| UserPostActions.DELETE_POST_DAY
+		| UserPostActions.DELETE_POST;
+}
+
+export interface IDayToAdd {
+	day: number;
+	content: string;
+	image: FileList;
 }

@@ -10,19 +10,22 @@ import NewCommentModal from "./modals/NewCommentModal";
 
 import { IPostProps } from "@/interfaces/objects";
 import { formatDate } from "@/utils/all";
+import { UserPostActions } from "@/constants/all";
 
-function Post({ postWithUserName, setPostComments, setPostToEdit, setPostToRemove }: IPostProps) {
+const postDays = [1, 2, 3, 4, 5];
+
+function Post({ postWithUserName, setPostComments, setPostAction,setPostToEdit, setPostToRemove }: IPostProps) {
 	const router = useRouter();
 	const pathname = usePathname();
 
-	const handlePostClick = () => {
+	const handleViewMoreDays = () => {
 		router.push(`/experiences/${postWithUserName.post.id}`);
 	};
 
-	const handleRemovePost = () => {
-		if (setPostToRemove !== null) {
-			setPostToRemove(postWithUserName);
-			document.getElementById("confirmationModal")?.showModal();
+	const handleAddPostDay = () => {
+		if (setPostAction !== null) {
+			setPostAction({post: postWithUserName, action: UserPostActions.ADD_POST_DAY});
+			document.getElementById("postModal")?.showModal();
 		}
 	};
 
@@ -30,6 +33,13 @@ function Post({ postWithUserName, setPostComments, setPostToEdit, setPostToRemov
 		if (setPostToEdit !== null) {
 			setPostToEdit(postWithUserName);
 			document.getElementById("postModal")?.showModal();
+		}
+	};
+
+	const handleRemovePost = () => {
+		if (setPostToRemove !== null) {
+			setPostToRemove(postWithUserName);
+			document.getElementById("confirmationModal")?.showModal();
 		}
 	};
 
@@ -53,18 +63,39 @@ function Post({ postWithUserName, setPostComments, setPostToEdit, setPostToRemov
 						<span className="text-xs">{formatDate(new Date(postWithUserName.postDays[0].createdAt))}</span>
 					</div>
 					<div className="flex gap-2">
-						<button className="btn btn-neutral btn-sm normal-case">Ver mas dias</button>
-						{pathname === "/profile" && (
+						<div className={`${!pathname.includes("/experiences/") && "hidden"}`}>
+							<label htmlFor="daySelect">Dia: </label>
+							<select name="daySelect" id="daySelect" className="select select-primary select-sm">
+								{postDays.map((postDay) => (
+									<option key={postDay} value={postDay}>
+										{postDay}
+									</option>
+								))}
+							</select>
+						</div>
+						<button
+							className={`btn btn-neutral btn-sm normal-case ${pathname.includes("/experiences/") && "hidden"}`}
+							onClick={handleViewMoreDays}
+						>
+							Ver mas
+						</button>
+						{pathname !== "/profile" && postWithUserName.isUserPost && (
 							<details id={`actionsPost${postWithUserName.post.id}`} className="dropdown dropdown-end">
 								<summary className="btn btn-sm btn-circle btn-ghost">
 									<GrMore />
 								</summary>
-								<ul className="p-2 shadow menu dropdown-content z-[1] rounded-box w-24 bg-white">
+								<ul className="p-2 shadow menu dropdown-content z-[1] rounded-box w-44 bg-white mt-2">
 									<li>
-										<button onClick={handleEditPost}>Editar</button>
+										<button onClick={handleAddPostDay}>Añadir dia</button>
 									</li>
 									<li>
-										<button onClick={handleRemovePost}>Eliminar</button>
+										<button onClick={handleEditPost}>Editar dia</button>
+									</li>
+									<li>
+										<button>Eliminar dia</button>
+									</li>
+									<li>
+										<button onClick={handleRemovePost}>Eliminar experiencia</button>
 									</li>
 								</ul>
 							</details>

@@ -79,6 +79,7 @@ function Experiences() {
 										setPostComments={null}
 										setPostToEdit={null}
 										setPostToRemove={null}
+										setPostAction={null}
 									/>
 								);
 							})
@@ -88,7 +89,7 @@ function Experiences() {
 					</>
 				)}
 			</div>
-			<PostModal postToEdit={null} changePostToEdit={null} setMyPosts={null} />
+			<PostModal postToEdit={null} changePostToEdit={null} setMyPost={null} postAction={null}/>
 		</div>
 	);
 }
