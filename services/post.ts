@@ -262,3 +262,19 @@ export async function addPostDay(postId: number, postDay: IDayToAdd) {
 		throw error;
 	}
 }
+
+export async function getDayListOfPost(postId: number) {
+	try {
+		const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL}/api/v1/post-day/day-list/${postId}`, {
+			headers: { "Content-Type": "application/json" },
+		});
+		const data = await response.json();
+		if (!response.ok) {
+			alert("Error getting post comments");
+			return;
+		}
+		return data;
+	} catch (error) {
+		console.error(error);
+	}
+}

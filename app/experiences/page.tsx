@@ -76,10 +76,12 @@ function Experiences() {
 									<Post
 										key={post.post.id}
 										postWithUserName={post}
+										setPostWithUserName={null}
 										setPostComments={null}
 										setPostToEdit={null}
 										setPostToRemove={null}
 										setPostAction={null}
+										postDays={null}
 									/>
 								);
 							})
