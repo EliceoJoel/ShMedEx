@@ -70,10 +70,12 @@ export interface IInteractionsProps {
 
 export interface IPostProps {
 	postWithUserName: IPostWithUserName;
+	setPostWithUserName: Dispatch<SetStateAction<IPostWithUserName | null>> | null;
 	setPostComments: Dispatch<SetStateAction<ICommentFromDB[] | undefined>> | null;
 	setPostToEdit: Dispatch<SetStateAction<IPostWithUserName | null>> | null;
 	setPostToRemove: Dispatch<SetStateAction<IPostWithUserName | null>> | null;
 	setPostAction: Dispatch<SetStateAction<IPostAction | null>> | null;
+	postDays: number[] | null;
 }
 
 export interface ICommentProps {

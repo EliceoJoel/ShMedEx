@@ -5,8 +5,13 @@ import Comment from "@/components/Comment";
 import Post from "@/components/Post";
 import ConfirmationModal from "@/components/modals/ConfirmationModal";
 import PostModal from "@/components/modals/PostModal";
-import { ICommentFromDB, IPostAction, IPostWithUserName, User } from "@/interfaces/objects";
-import { getPostById, getPostComments, removePost } from "@/services/post";
+import {
+	ICommentFromDB,
+	IPostAction,
+	IPostWithUserName,
+	User,
+} from "@/interfaces/objects";
+import { getDayListOfPost, getPostById, getPostComments, removePost } from "@/services/post";
 import { useUserStore } from "@/store/userStore";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -17,24 +22,25 @@ function SpecificPost({ params }: { params: { id: string } }) {
 	const [postAction, setPostAction] = useState<IPostAction | null>(null);
 	const [postToEdit, setPostToEdit] = useState<IPostWithUserName | null>(null);
 	const [postToRemove, setPostToRemove] = useState<IPostWithUserName | null>(null);
-	const [postDaySelected, setPostDaySelected] = useState(1);
+	const [postDays, setPostDays] = useState<number[] | null>(null);
 
 	const { user } = useUserStore((store) => store);
 	const router = useRouter();
 
 	useEffect(() => {
-		async function getPostData(user: User) {
-			const postData = await getPostById(parseInt(params.id), user.id, postDaySelected);
+		async function loadPostData(user: User) {
+			const postDayList = await getDayListOfPost(parseInt(params.id));
+			setPostDays(postDayList);
+			const postData = await getPostById(parseInt(params.id), user.id, postDayList[0]);
 			setPostWithUserName(postData);
-			setPostDaySelected(1);
 		}
-		async function getPostCommentsData() {
+		async function loadPostCommentsData() {
 			const postCommentsData = await getPostComments(Number(params.id));
 			setPostComments(postCommentsData);
 		}
 		if (user !== null) {
-			getPostData(user);
-			getPostCommentsData();
+			loadPostData(user);
+			loadPostCommentsData();
 		} else {
 			router.push("/signin");
 		}
@@ -69,10 +75,12 @@ function SpecificPost({ params }: { params: { id: string } }) {
 				<div className="flex items-center w-full flex-col px-4 py-2 overflow-y-auto h-[calc(100vh-64px)] md:px-0">
 					<Post
 						postWithUserName={postWithUserName}
+						setPostWithUserName={setPostWithUserName}
 						setPostAction={setPostAction}
 						setPostToEdit={null}
 						setPostComments={setPostComments}
 						setPostToRemove={setPostToRemove}
+						postDays={postDays}
 					/>
 					{postComments ? (
 						<div className="w-full flex flex-col max-w-3xl">

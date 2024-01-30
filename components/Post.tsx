@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 
 import { GrMore } from "react-icons/gr";
 
@@ -11,12 +11,23 @@ import NewCommentModal from "./modals/NewCommentModal";
 import { IPostProps } from "@/interfaces/objects";
 import { formatDate } from "@/utils/all";
 import { UserPostActions } from "@/constants/all";
+import { getPostById } from "@/services/post";
+import { useUserStore } from "@/store/userStore";
 
-const postDays = [1, 2, 3, 4, 5];
-
-function Post({ postWithUserName, setPostComments, setPostAction,setPostToEdit, setPostToRemove }: IPostProps) {
+function Post({
+	postWithUserName,
+	setPostWithUserName,
+	setPostComments,
+	setPostAction,
+	setPostToEdit,
+	setPostToRemove,
+	postDays,
+}: IPostProps) {
 	const router = useRouter();
 	const pathname = usePathname();
+	const params = useParams();
+
+	const { user: loggedUser } = useUserStore((store) => store);
 
 	const handleViewMoreDays = () => {
 		router.push(`/experiences/${postWithUserName.post.id}`);
@@ -24,7 +35,7 @@ function Post({ postWithUserName, setPostComments, setPostAction,setPostToEdit, 
 
 	const handleAddPostDay = () => {
 		if (setPostAction !== null) {
-			setPostAction({post: postWithUserName, action: UserPostActions.ADD_POST_DAY});
+			setPostAction({ post: postWithUserName, action: UserPostActions.ADD_POST_DAY });
 			document.getElementById("postModal")?.showModal();
 		}
 	};
@@ -40,6 +51,13 @@ function Post({ postWithUserName, setPostComments, setPostAction,setPostToEdit, 
 		if (setPostToRemove !== null) {
 			setPostToRemove(postWithUserName);
 			document.getElementById("confirmationModal")?.showModal();
+		}
+	};
+
+	const handleDaySelectChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
+		if (setPostWithUserName !== null && loggedUser !== null) {
+			const postData = await getPostById(parseInt(params.id as string), loggedUser.id, parseInt(event.target.value));
+			setPostWithUserName(postData);
 		}
 	};
 
@@ -65,8 +83,13 @@ function Post({ postWithUserName, setPostComments, setPostAction,setPostToEdit, 
 					<div className="flex gap-2">
 						<div className={`${!pathname.includes("/experiences/") && "hidden"}`}>
 							<label htmlFor="daySelect">Dia: </label>
-							<select name="daySelect" id="daySelect" className="select select-primary select-sm">
-								{postDays.map((postDay) => (
+							<select
+								name="daySelect"
+								id="daySelect"
+								className="select select-primary select-sm"
+								onChange={handleDaySelectChange}
+							>
+								{postDays?.map((postDay) => (
 									<option key={postDay} value={postDay}>
 										{postDay}
 									</option>

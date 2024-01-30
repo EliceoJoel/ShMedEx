@@ -68,10 +68,12 @@ function Profile() {
 								<Post
 									key={postWithUsername.post.id}
 									postWithUserName={postWithUsername}
+									setPostWithUserName={null}
 									setPostComments={null}
 									setPostToEdit={null}
 									setPostToRemove={null}
 									setPostAction={null}
+									postDays={null}
 								/>
 							))
 						) : (
