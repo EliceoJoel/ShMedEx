@@ -5,12 +5,7 @@ import Comment from "@/components/Comment";
 import Post from "@/components/Post";
 import ConfirmationModal from "@/components/modals/ConfirmationModal";
 import PostModal from "@/components/modals/PostModal";
-import {
-	ICommentFromDB,
-	IPostAction,
-	IPostWithUserName,
-	User,
-} from "@/interfaces/objects";
+import { ICommentFromDB, IPostAction, IPostWithUserName, User } from "@/interfaces/objects";
 import { getDayListOfPost, getPostById, getPostComments, removePost } from "@/services/post";
 import { useUserStore } from "@/store/userStore";
 import { useRouter } from "next/navigation";
@@ -30,7 +25,7 @@ function SpecificPost({ params }: { params: { id: string } }) {
 	useEffect(() => {
 		async function loadPostData(user: User) {
 			const postDayList = await getDayListOfPost(parseInt(params.id));
-			setPostDays(postDayList);
+			setPostDays(postDayList.sort((a: number, b: number) => a - b));
 			const postData = await getPostById(parseInt(params.id), user.id, postDayList[0]);
 			setPostWithUserName(postData);
 		}
@@ -108,7 +103,8 @@ function SpecificPost({ params }: { params: { id: string } }) {
 				postAction={postAction}
 				postToEdit={postToEdit}
 				changePostToEdit={setPostToEdit}
-				setMyPost={setPostWithUserName}
+				setPostWithUserName={setPostWithUserName}
+				setPostDays={setPostDays}
 			/>
 			<ConfirmationModal
 				confirmationText="¿Quieres eliminar este post?"

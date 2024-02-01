@@ -1,5 +1,5 @@
-import { UserPostActions } from "@/constants/all";
 import { Dispatch, SetStateAction } from "react";
+import { UserPostActions } from "@/constants/all";
 
 export interface IPost {
 	id: number;
@@ -101,7 +101,8 @@ export interface IPostModalProps {
 	postAction: IPostAction | null;
 	postToEdit: IPostWithUserName | null;
 	changePostToEdit: Dispatch<SetStateAction<IPostWithUserName | null>> | null;
-	setMyPost: Dispatch<SetStateAction<IPostWithUserName | null>> | null;
+	setPostWithUserName: Dispatch<SetStateAction<IPostWithUserName | null>> | null;
+	setPostDays: Dispatch<SetStateAction<number[] | null>> | null;
 }
 
 export interface IConfirmationModalProps {
@@ -111,7 +112,7 @@ export interface IConfirmationModalProps {
 }
 
 export interface IPostAction {
-	post: IPostWithUserName;
+	postDay: IPostDay;
 	action:
 		| UserPostActions.ADD_POST_DAY
 		| UserPostActions.EDIT_POST_DAY
@@ -123,4 +124,11 @@ export interface IDayToAdd {
 	day: number;
 	content: string;
 	image: FileList;
+}
+
+export interface IDayToUpdate {
+	id: number
+	day: number;
+	content: string;
+	image: string;
 }
