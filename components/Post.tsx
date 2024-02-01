@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import { useParams, usePathname, useRouter } from "next/navigation";
 
@@ -19,7 +20,6 @@ function Post({
 	setPostWithUserName,
 	setPostComments,
 	setPostAction,
-	setPostToEdit,
 	setPostToRemove,
 	postDays,
 }: IPostProps) {
@@ -27,23 +27,21 @@ function Post({
 	const pathname = usePathname();
 	const params = useParams();
 
+	const [selectedDay, setSelectedDay] = useState<number>(postWithUserName.postDays[0].day);
+
 	const { user: loggedUser } = useUserStore((store) => store);
 
 	const handleViewMoreDays = () => {
 		router.push(`/experiences/${postWithUserName.post.id}`);
 	};
 
-	const handleAddPostDay = () => {
+	const handleAddOrUpdatePostDay = (postAction: UserPostActions) => {
 		if (setPostAction !== null) {
-			setPostAction({ post: postWithUserName, action: UserPostActions.ADD_POST_DAY });
-			document.getElementById("postModal")?.showModal();
-		}
-	};
-
-	const handleEditPost = () => {
-		if (setPostToEdit !== null) {
-			setPostToEdit(postWithUserName);
-			document.getElementById("postModal")?.showModal();
+			const postDay = getPostDayByDayNumber(selectedDay);
+			if (postDay !== undefined) {
+				setPostAction({ postDay: postDay, action: postAction });
+				document.getElementById("postModal")?.showModal();
+			}
 		}
 	};
 
@@ -58,7 +56,12 @@ function Post({
 		if (setPostWithUserName !== null && loggedUser !== null) {
 			const postData = await getPostById(parseInt(params.id as string), loggedUser.id, parseInt(event.target.value));
 			setPostWithUserName(postData);
+			setSelectedDay(parseInt(event.target.value));
 		}
+	};
+
+	const getPostDayByDayNumber = (dayNumber: number) => {
+		return postWithUserName.postDays.find((postDay) => (postDay.day = dayNumber));
 	};
 
 	return (
@@ -109,10 +112,14 @@ function Post({
 								</summary>
 								<ul className="p-2 shadow menu dropdown-content z-[1] rounded-box w-44 bg-white mt-2">
 									<li>
-										<button onClick={handleAddPostDay}>Añadir dia</button>
+										<button onClick={() => handleAddOrUpdatePostDay(UserPostActions.ADD_POST_DAY)}>
+											Añadir dia
+										</button>
 									</li>
 									<li>
-										<button onClick={handleEditPost}>Editar dia</button>
+										<button onClick={() => handleAddOrUpdatePostDay(UserPostActions.EDIT_POST_DAY)}>
+											Editar dia
+										</button>
 									</li>
 									<li>
 										<button>Eliminar dia</button>

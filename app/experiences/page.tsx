@@ -91,7 +91,7 @@ function Experiences() {
 					</>
 				)}
 			</div>
-			<PostModal postToEdit={null} changePostToEdit={null} setMyPost={null} postAction={null}/>
+			<PostModal postToEdit={null} changePostToEdit={null} setPostWithUserName={null} postAction={null} setPostDays={null}/>
 		</div>
 	);
 }

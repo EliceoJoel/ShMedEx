@@ -2,17 +2,24 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { useParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 import { NewPost } from "@/interfaces/inputs";
-import { IPostModalProps, IPostWithUserName } from "@/interfaces/objects";
+import { IPostModalProps } from "@/interfaces/objects";
 import { NewPostSchema, getYupSchema } from "@/yup/schemas";
 import { useUserStore } from "@/store/userStore";
-import { addPostDay, createPost, getImageUrl, getPostById, updatePost } from "@/services/post";
+import { addPostDay, createPost, getDayListOfPost, getImageUrl, getPostById, updatePostDay } from "@/services/post";
 import { UserPostActions } from "@/constants/all";
 
-function PostModal({ postAction, postToEdit, changePostToEdit, setMyPost }: IPostModalProps) {
+function PostModal({ postAction, setPostWithUserName, setPostDays }: IPostModalProps) {
+	const params = useParams();
+
+	const { user: loggedUser } = useUserStore((user) => user);
+
+	const [isPublishing, setIsisPublishing] = useState(false);
+
 	const {
 		register,
 		handleSubmit,
@@ -21,15 +28,12 @@ function PostModal({ postAction, postToEdit, changePostToEdit, setMyPost }: IPos
 		formState: { errors },
 	} = useForm<NewPost>(getYupSchema(NewPostSchema));
 
-	const [isPublishing, setIsisPublishing] = useState(false);
-
-	const { user: loggedUser } = useUserStore((user) => user);
-
 	useEffect(() => {
-		if (postToEdit != null) {
-			setValue("post", postToEdit.postDays[0].content);
+		if (postAction?.action == UserPostActions.EDIT_POST_DAY) {
+			setValue("postDay", postAction.postDay.day);
+			setValue("post", postAction.postDay.content);
 		}
-	}, [postToEdit]);
+	}, [postAction]);
 
 	const handlePublish = handleSubmit(async (data) => {
 		// loading started
@@ -37,15 +41,16 @@ function PostModal({ postAction, postToEdit, changePostToEdit, setMyPost }: IPos
 
 		if (postAction !== null) {
 			switch (postAction.action) {
-				case UserPostActions.ADD_POST_DAY:
-					await handleAddPostDay(postAction.post, data);
-					break;
-				case UserPostActions.EDIT_POST_DAY:
-					break;
-				case UserPostActions.DELETE_POST_DAY:
-					break;
-				case UserPostActions.DELETE_POST:
-					break;
+			case UserPostActions.ADD_POST_DAY:
+				await handleAddPostDay(data);
+				break;
+			case UserPostActions.EDIT_POST_DAY:
+				await handleEditPostDay(data);
+				break;
+			case UserPostActions.DELETE_POST_DAY:
+				break;
+			case UserPostActions.DELETE_POST:
+				break;
 			}
 		} else if (loggedUser !== null) {
 			// Create a post
@@ -62,38 +67,39 @@ function PostModal({ postAction, postToEdit, changePostToEdit, setMyPost }: IPos
 		document.getElementById("postModal")?.close();
 	});
 
-	const handleAddPostDay = async (postToAddDay: IPostWithUserName, data: NewPost) => {
-		await addPostDay(postToAddDay.post.id, { day: data.postDay, content: data.post, image: data.image });
+	const handleAddPostDay = async (data: NewPost) => {
+		await addPostDay(parseInt(params.id as string), { day: data.postDay, content: data.post, image: data.image });
+		if(setPostDays !== null) {
+			const postDayList = await getDayListOfPost(parseInt(params.id as string));
+			setPostDays(postDayList.sort((a: number, b: number) => a - b));
+		}
+		closePostActionsDropdown();
 		toast.success("Experiencia del dia agregado al post exitosamente!");
 	};
 
-	// const handleEditPostDay = async () => {
-	// 	if (postToEdit !== null && changePostToEdit != null) {
-	// 		// Update a post
-	// 		let imageUrlUpdated;
-	// 		if (data.image.length === 0) {
-	// 			imageUrlUpdated = postToEdit.postDays[0].image;
-	// 		} else {
-	// 			imageUrlUpdated = await getImageUrl(data.image);
-	// 		}
-	// 		await updatePost(postToEdit.post.id, data.post, imageUrlUpdated);
-	// 		changePostToEdit(null);
+	const handleEditPostDay = async (data: NewPost) => {
+		if (postAction !== null) {
+			// Update post in db
+			const imageUrlUpdated = data.image.length === 0 ? postAction.postDay.image : await getImageUrl(data.image);
+			await updatePostDay(parseInt(params.id as string), {
+				id: postAction?.postDay.id,
+				day: data.postDay,
+				content: data.post,
+				image: imageUrlUpdated,
+			});
+			// Update post in the ui
+			if(setPostWithUserName !== null && loggedUser !== null) {
+				const postData = await getPostById(parseInt(params.id as string), loggedUser.id, postAction.postDay.day);
+				setPostWithUserName(postData);
+			}
+			closePostActionsDropdown();
+			toast.success(`La experiencia del dia ${postAction?.postDay.day} fue actualizada exitosamente!`);
+		}
+	};
 
-	// 		// Update all my post with the changes
-	// 		if (loggedUser !== null && setMyPost != null) {
-	// 			const data = await getPostById(postToEdit.post.id, loggedUser.id, 1);
-	// 			setMyPost(data);
-	// 		}
-
-	// 		// Close actions dropdown
-	// 		closePostActionsDropdown();
-	// 	}
-	// }
 
 	const closePostActionsDropdown = () => {
-		if (postToEdit !== null) {
-			document.getElementById(`actionsPost${postToEdit.post.id}`)?.removeAttribute("open");
-		}
+		document.getElementById(`actionsPost${params.id}`)?.removeAttribute("open");
 	};
 
 	return (
@@ -133,11 +139,11 @@ function PostModal({ postAction, postToEdit, changePostToEdit, setMyPost }: IPos
 							</div>
 						)}
 					</label>
-					{postToEdit != null && (
+					{postAction?.action === UserPostActions.EDIT_POST_DAY && (
 						<div className="mb-4">
 							<Image
 								alt="Image of editing post"
-								src={postToEdit.postDays[0].image as string}
+								src={postAction.postDay.image as string}
 								width={768}
 								height={768}
 								priority={true}
@@ -167,9 +173,6 @@ function PostModal({ postAction, postToEdit, changePostToEdit, setMyPost }: IPos
 							type="button"
 							onClick={() => {
 								document.getElementById("postModal")?.close();
-								if (changePostToEdit !== null) {
-									changePostToEdit(null);
-								}
 								reset();
 								closePostActionsDropdown();
 							}}
@@ -186,9 +189,6 @@ function PostModal({ postAction, postToEdit, changePostToEdit, setMyPost }: IPos
 			<form method="dialog" className="modal-backdrop">
 				<button
 					onClick={() => {
-						if (changePostToEdit !== null) {
-							changePostToEdit(null);
-						}
 						reset();
 						closePostActionsDropdown();
 					}}
