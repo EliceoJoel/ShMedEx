@@ -52,7 +52,7 @@ function Profile() {
 				<h1 className="font-bold text-2xl md:text-3xl">{user?.name + " " + user?.lastName}</h1>
 			</div>
 			<div className="p-4">
-				<h2 className="font-bold text-center">My Posts</h2>
+				<h2 className="font-bold text-center">Mis experiencias publicadas</h2>
 				<div className="flex justify-center">
 					<div className="divider mt-0 max-w-3xl w-full"></div>
 				</div>
@@ -70,8 +70,8 @@ function Profile() {
 									postWithUserName={postWithUsername}
 									setPostWithUserName={null}
 									setPostComments={null}
-									setPostToEdit={null}
 									setPostToRemove={null}
+									setPostDayToRemove={null}
 									setPostAction={null}
 									postDays={null}
 								/>

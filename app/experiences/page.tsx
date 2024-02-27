@@ -78,8 +78,8 @@ function Experiences() {
 										postWithUserName={post}
 										setPostWithUserName={null}
 										setPostComments={null}
-										setPostToEdit={null}
 										setPostToRemove={null}
+										setPostDayToRemove={null}
 										setPostAction={null}
 										postDays={null}
 									/>
@@ -91,7 +91,7 @@ function Experiences() {
 					</>
 				)}
 			</div>
-			<PostModal postToEdit={null} changePostToEdit={null} setPostWithUserName={null} postAction={null} setPostDays={null}/>
+			<PostModal setPostWithUserName={null} postAction={null} setPostDays={null}/>
 		</div>
 	);
 }
