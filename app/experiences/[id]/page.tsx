@@ -5,18 +5,19 @@ import Comment from "@/components/Comment";
 import Post from "@/components/Post";
 import ConfirmationModal from "@/components/modals/ConfirmationModal";
 import PostModal from "@/components/modals/PostModal";
-import { ICommentFromDB, IPostAction, IPostWithUserName, User } from "@/interfaces/objects";
-import { getDayListOfPost, getPostById, getPostComments, removePost } from "@/services/post";
+import { ICommentFromDB, IPostAction, IPostDay, IPostWithUserName, User } from "@/interfaces/objects";
+import { getDayListOfPost, getPostById, getPostComments, deletePost, deletePostDay } from "@/services/post";
 import { useUserStore } from "@/store/userStore";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 function SpecificPost({ params }: { params: { id: string } }) {
 	const [postWithUserName, setPostWithUserName] = useState<IPostWithUserName | null>(null);
 	const [postComments, setPostComments] = useState<ICommentFromDB[]>();
 	const [postAction, setPostAction] = useState<IPostAction | null>(null);
-	const [postToEdit, setPostToEdit] = useState<IPostWithUserName | null>(null);
 	const [postToRemove, setPostToRemove] = useState<IPostWithUserName | null>(null);
+	const [postDayToRemove, setPostDayToRemove] = useState<IPostDay | null>(null);
 	const [postDays, setPostDays] = useState<number[] | null>(null);
 
 	const { user } = useUserStore((store) => store);
@@ -41,11 +42,32 @@ function SpecificPost({ params }: { params: { id: string } }) {
 		}
 	}, []);
 
+	const removePostDayAction = async () => {
+		if (postDayToRemove !== null && user !== null) {
+			if (postDays?.length === 1) {
+				await removePostAction();
+				return;
+			}
+			await deletePostDay(postDayToRemove.id);
+			//Get updated post data
+			const postDayList = await getDayListOfPost(parseInt(params.id));
+			setPostDays(postDayList.sort((a: number, b: number) => a - b));
+			const postData = await getPostById(parseInt(params.id), user.id, postDayList[0]);
+			setPostWithUserName(postData);
+
+			closePostActionsDropdown();
+			toast.success("Dia de la experiencia eliminada exitosamente!");
+		}
+	};
+
 	const removePostAction = async () => {
 		if (postToRemove !== null) {
-			// Removes from database
-			await removePost(postToRemove.post.id);
+			await deletePost(postToRemove.post.id);
 			// Redirects to previous route.
+			closePostActionsDropdown();
+			toast.success("Experiencia eliminada exitosamente!");
+
+			router.back();
 		}
 	};
 
@@ -54,9 +76,7 @@ function SpecificPost({ params }: { params: { id: string } }) {
 	};
 
 	const closePostActionsDropdown = () => {
-		if (postToRemove !== null) {
-			document.getElementById(`actionsPost${postToRemove.post.id}`)?.removeAttribute("open");
-		}
+		document.getElementById(`actionsPost${params.id}`)?.removeAttribute("open");
 	};
 
 	return (
@@ -72,9 +92,9 @@ function SpecificPost({ params }: { params: { id: string } }) {
 						postWithUserName={postWithUserName}
 						setPostWithUserName={setPostWithUserName}
 						setPostAction={setPostAction}
-						setPostToEdit={null}
 						setPostComments={setPostComments}
 						setPostToRemove={setPostToRemove}
+						setPostDayToRemove={setPostDayToRemove}
 						postDays={postDays}
 					/>
 					{postComments ? (
@@ -99,16 +119,14 @@ function SpecificPost({ params }: { params: { id: string } }) {
 					<span className="loading loading-infinity w-12 md:w-20"></span>
 				</div>
 			)}
-			<PostModal
-				postAction={postAction}
-				postToEdit={postToEdit}
-				changePostToEdit={setPostToEdit}
-				setPostWithUserName={setPostWithUserName}
-				setPostDays={setPostDays}
-			/>
+			<PostModal postAction={postAction} setPostWithUserName={setPostWithUserName} setPostDays={setPostDays} />
 			<ConfirmationModal
-				confirmationText="¿Quieres eliminar este post?"
-				yesAction={removePostAction}
+				confirmationText={
+					postDayToRemove !== null
+						? "¿Quieres eliminar este dia de la experiencia?"
+						: "¿Quieres eliminar esta experiencia?"
+				}
+				yesAction={postDayToRemove !== null ? removePostDayAction : removePostAction}
 				cancelAction={cancelRemoveAction}
 			/>
 		</div>

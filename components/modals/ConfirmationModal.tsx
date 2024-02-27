@@ -6,7 +6,7 @@ function ConfirmationModal({ confirmationText, yesAction, cancelAction }: IConfi
 	return (
 		<dialog id="confirmationModal" className="modal">
 			<div className="modal-box">
-				<h3 className="font-bold text-lg">Confrimation</h3>
+				<h3 className="font-bold text-lg">Confirmación</h3>
 				<p className="py-4">{confirmationText}</p>
 				<div className="flex justify-end gap-4">
 					<button

@@ -25,25 +25,6 @@ export async function createPost(postDay: number, postContent: string, postImage
 	}
 }
 
-export async function updatePost(postId: number, postText: string, postImageUrl: string) {
-	try {
-		await fetch(process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL + "/api/v1/post/" + postId, {
-			method: "PUT",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({
-				content: postText,
-				image: postImageUrl,
-				updatedAt: new Date(),
-			}),
-		}).catch((error) => {
-			console.error(error);
-		});
-	} catch (error) {
-		console.error(error);
-		throw error;
-	}
-}
-
 export async function getImageUrl(imageFileList: FileList) {
 	try {
 		if (imageFileList.length > 0) {
@@ -225,7 +206,7 @@ export async function toggleFollow(postId: number, userId: number) {
 	}
 }
 
-export async function removePost(postId: number) {
+export async function deletePost(postId: number) {
 	try {
 		const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL}/api/v1/post/${postId}`, {
 			method: "DELETE",
@@ -242,7 +223,7 @@ export async function removePost(postId: number) {
 export async function addPostDay(postId: number, postDay: IDayToAdd) {
 	try {
 		const imageUrl = await getImageUrl(postDay.image);
-		await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL}/api/v1/post/day`, {
+		const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL}/api/v1/post/day`, {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({
@@ -253,9 +234,11 @@ export async function addPostDay(postId: number, postDay: IDayToAdd) {
 					image: imageUrl
 				}
 			}),
-		}).catch((error) => {
-			console.error(error);
 		});
+		if(response.status === 400) {
+			const errorText = await response.text();
+			return { status: response.status, message: errorText };
+		}
 	} catch (error) {
 		console.error(error);
 		throw error;
@@ -289,6 +272,21 @@ export async function updatePostDay(postId: number, postDay: IDayToUpdate) {
 		}).catch((error) => {
 			console.error(error);
 		});
+	} catch (error) {
+		console.error(error);
+		throw error;
+	}
+}
+
+export async function deletePostDay(postDayId: number) {
+	try {
+		const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL}/api/v1/post-day/${postDayId}`, {
+			method: "DELETE",
+			headers: { "Content-Type": "application/json" },
+		});
+		if(!response.ok) {
+			console.error("Error deleting post day");
+		}
 	} catch (error) {
 		console.error(error);
 		throw error;

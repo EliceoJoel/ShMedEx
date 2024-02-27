@@ -66,14 +66,15 @@ export interface IInteractionsProps {
 	postId: number;
 	isFollowedByLoggedUSer: boolean;
 	isLikedByLoggedUser: boolean;
+	isUserPost: boolean;
 }
 
 export interface IPostProps {
 	postWithUserName: IPostWithUserName;
 	setPostWithUserName: Dispatch<SetStateAction<IPostWithUserName | null>> | null;
 	setPostComments: Dispatch<SetStateAction<ICommentFromDB[] | undefined>> | null;
-	setPostToEdit: Dispatch<SetStateAction<IPostWithUserName | null>> | null;
 	setPostToRemove: Dispatch<SetStateAction<IPostWithUserName | null>> | null;
+	setPostDayToRemove: Dispatch<SetStateAction<IPostDay | null>> | null;
 	setPostAction: Dispatch<SetStateAction<IPostAction | null>> | null;
 	postDays: number[] | null;
 }
@@ -99,8 +100,6 @@ export interface INewCommentModalProps {
 
 export interface IPostModalProps {
 	postAction: IPostAction | null;
-	postToEdit: IPostWithUserName | null;
-	changePostToEdit: Dispatch<SetStateAction<IPostWithUserName | null>> | null;
 	setPostWithUserName: Dispatch<SetStateAction<IPostWithUserName | null>> | null;
 	setPostDays: Dispatch<SetStateAction<number[] | null>> | null;
 }

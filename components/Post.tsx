@@ -21,6 +21,7 @@ function Post({
 	setPostComments,
 	setPostAction,
 	setPostToRemove,
+	setPostDayToRemove,
 	postDays,
 }: IPostProps) {
 	const router = useRouter();
@@ -46,9 +47,21 @@ function Post({
 	};
 
 	const handleRemovePost = () => {
-		if (setPostToRemove !== null) {
+		if (setPostDayToRemove !== null && setPostToRemove !== null) {
+			setPostDayToRemove(null);
 			setPostToRemove(postWithUserName);
 			document.getElementById("confirmationModal")?.showModal();
+		}
+	};
+
+	const handleRemovePostDay = () => {
+		if (setPostDayToRemove !== null && setPostToRemove !== null) {
+			const postDay = getPostDayByDayNumber(selectedDay);
+			if (postDay !== undefined) {
+				setPostDayToRemove(postDay);
+				setPostToRemove(null);
+				document.getElementById("confirmationModal")?.showModal();
+			}
 		}
 	};
 
@@ -71,7 +84,7 @@ function Post({
 		>
 			<div className="flex gap-2">
 				<div className="avatar placeholder">
-					<div className="bg-neutral text-neutral-content rounded-full w-9 h-9">
+					<div className={`${postWithUserName.isUserPost ? "bg-primary" : "bg-neutral text-neutral-content"} font-bold rounded-full w-9 h-9`}>
 						<span className="text-xs">
 							{postWithUserName.userName.split(" ")[0].charAt(0).toUpperCase() +
 								postWithUserName.userName.split(" ")[1].charAt(0).toUpperCase()}
@@ -122,7 +135,7 @@ function Post({
 										</button>
 									</li>
 									<li>
-										<button>Eliminar dia</button>
+										<button onClick={handleRemovePostDay}>Eliminar dia</button>
 									</li>
 									<li>
 										<button onClick={handleRemovePost}>Eliminar experiencia</button>
@@ -155,6 +168,7 @@ function Post({
 				postId={postWithUserName.post.id}
 				isFollowedByLoggedUSer={postWithUserName.isFollowedByUser}
 				isLikedByLoggedUser={postWithUserName.isLikedByUser}
+				isUserPost={postWithUserName.isUserPost}
 			/>
 			<NewCommentModal setPostComments={setPostComments} />
 		</div>

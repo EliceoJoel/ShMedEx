@@ -26,10 +26,11 @@ function PostModal({ postAction, setPostWithUserName, setPostDays }: IPostModalP
 		setValue,
 		reset,
 		formState: { errors },
+		setError,
 	} = useForm<NewPost>(getYupSchema(NewPostSchema));
 
 	useEffect(() => {
-		if (postAction?.action == UserPostActions.EDIT_POST_DAY) {
+		if (postAction?.action === UserPostActions.EDIT_POST_DAY) {
 			setValue("postDay", postAction.postDay.day);
 			setValue("post", postAction.postDay.content);
 		}
@@ -41,40 +42,48 @@ function PostModal({ postAction, setPostWithUserName, setPostDays }: IPostModalP
 
 		if (postAction !== null) {
 			switch (postAction.action) {
-			case UserPostActions.ADD_POST_DAY:
-				await handleAddPostDay(data);
-				break;
-			case UserPostActions.EDIT_POST_DAY:
-				await handleEditPostDay(data);
-				break;
-			case UserPostActions.DELETE_POST_DAY:
-				break;
-			case UserPostActions.DELETE_POST:
-				break;
+				case UserPostActions.ADD_POST_DAY:
+					await handleAddPostDay(data);
+					break;
+				case UserPostActions.EDIT_POST_DAY:
+					await handleEditPostDay(data);
+					break;
 			}
 		} else if (loggedUser !== null) {
 			// Create a post
 			await createPost(data.postDay, data.post, data.image, loggedUser.id);
 			toast.success("Experiencia publicada exitosamente!");
+			// Clear fields
+			reset();
+			// Loading finished
+			setIsisPublishing(false);
+			// Close modal
+			document.getElementById("postModal")?.close();
 		}
-		// Clear fields
-		reset();
-
-		// Loading finished
-		setIsisPublishing(false);
-
-		// Close modal
-		document.getElementById("postModal")?.close();
 	});
 
 	const handleAddPostDay = async (data: NewPost) => {
-		await addPostDay(parseInt(params.id as string), { day: data.postDay, content: data.post, image: data.image });
-		if(setPostDays !== null) {
+		const response = await addPostDay(parseInt(params.id as string), {
+			day: data.postDay,
+			content: data.post,
+			image: data.image,
+		});
+		// Loading finished
+		setIsisPublishing(false);
+		if (response?.status === 400) {
+			setError("postDay", { message: response.message });
+			return;
+		}
+		if (setPostDays !== null) {
 			const postDayList = await getDayListOfPost(parseInt(params.id as string));
 			setPostDays(postDayList.sort((a: number, b: number) => a - b));
 		}
 		closePostActionsDropdown();
 		toast.success("Experiencia del dia agregado al post exitosamente!");
+		// Clear fields
+		reset();
+		// Close modal
+		document.getElementById("postModal")?.close();
 	};
 
 	const handleEditPostDay = async (data: NewPost) => {
@@ -88,15 +97,18 @@ function PostModal({ postAction, setPostWithUserName, setPostDays }: IPostModalP
 				image: imageUrlUpdated,
 			});
 			// Update post in the ui
-			if(setPostWithUserName !== null && loggedUser !== null) {
+			if (setPostWithUserName !== null && loggedUser !== null) {
 				const postData = await getPostById(parseInt(params.id as string), loggedUser.id, postAction.postDay.day);
 				setPostWithUserName(postData);
 			}
 			closePostActionsDropdown();
 			toast.success(`La experiencia del dia ${postAction?.postDay.day} fue actualizada exitosamente!`);
+			// Clear fields
+			reset();
+			// Close modal
+			document.getElementById("postModal")?.close();
 		}
 	};
-
 
 	const closePostActionsDropdown = () => {
 		document.getElementById(`actionsPost${params.id}`)?.removeAttribute("open");
@@ -105,7 +117,9 @@ function PostModal({ postAction, setPostWithUserName, setPostDays }: IPostModalP
 	return (
 		<dialog id="postModal" className="modal modal-bottom sm:modal-middle">
 			<div className="modal-box">
-				<h3 className="font-bold text-lg text-center mb-4">Nueva experiencia</h3>
+				<h3 className="font-bold text-lg text-center mb-4">
+					{postAction?.action === UserPostActions.ADD_POST_DAY ? "Nueva experiencia" : "Editar Experiencia"}
+				</h3>
 				<form onSubmit={handlePublish}>
 					<label className="form-control mb-4">
 						<div className="label">
@@ -117,9 +131,9 @@ function PostModal({ postAction, setPostWithUserName, setPostDays }: IPostModalP
 							type="number"
 							{...register("postDay")}
 						/>
-						{errors.post && (
+						{errors.postDay && (
 							<div className="label">
-								<span className="label-text-alt text-error">{errors.postDay?.message}</span>
+								<span className="label-text-alt text-error">{errors.postDay.message}</span>
 							</div>
 						)}
 					</label>
@@ -139,7 +153,7 @@ function PostModal({ postAction, setPostWithUserName, setPostDays }: IPostModalP
 							</div>
 						)}
 					</label>
-					{postAction?.action === UserPostActions.EDIT_POST_DAY && (
+					{postAction?.action === UserPostActions.EDIT_POST_DAY && postAction?.postDay.image !== null && (
 						<div className="mb-4">
 							<Image
 								alt="Image of editing post"

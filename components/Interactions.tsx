@@ -17,6 +17,7 @@ function Interactions({
 	postId,
 	isFollowedByLoggedUSer,
 	isLikedByLoggedUser,
+	isUserPost
 }: IInteractionsProps) {
 	const pathname = usePathname();
 	const { user } = useUserStore((state) => state);
@@ -90,7 +91,7 @@ function Interactions({
 			<div className="flex gap-1 items-center">
 				<button
 					id={`followButtonOfPost${postId}`}
-					className={`btn btn-sm btn-ghost btn-circle ${pathname === "/profile" && "cursor-not-allowed"}`}
+					className={`btn btn-sm btn-ghost btn-circle ${isUserPost && "cursor-not-allowed"}`}
 					onClick={handleFollow}
 				>
 					<FaHandHoldingMedical className={`h-6 w-6 ${isFollowedByLoggedUSer && "text-primary"}`} />
