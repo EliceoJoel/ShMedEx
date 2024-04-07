@@ -64,11 +64,12 @@ export async function getNotFollowedPosts(userId: number) {
 				headers: { "Content-Type": "application/json" },
 			}
 		);
-		const data = await response.json();
 		if (!response.ok) {
+			console.error("Error getting not followed posts:", response.statusText);
 			alert("Error getting not followed posts");
 			return;
 		}
+		const data = await response.json();
 		return data;
 	} catch (error) {
 		console.error(error);
@@ -80,11 +81,11 @@ export async function getFollowedPosts(userId: number) {
 		const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL + "/api/v1/post/followed/" + userId, {
 			headers: { "Content-Type": "application/json" },
 		});
-		const data = await response.json();
 		if (!response.ok) {
 			alert("Error getting not followed posts");
 			return;
 		}
+		const data = await response.json();
 		return data;
 	} catch (error) {
 		console.error(error);
@@ -101,11 +102,13 @@ export async function getPostById(postId: number, userId: number, postDay: numbe
 				postDay: postDay,
 			}),
 		});
-		const data = await response.json();
 		if (!response.ok) {
-			alert("Error getting not followed posts");
+			const errorText = await response.text();
+			console.error("Error getting post by id: " + errorText);
+			alert("Error getting post by id");
 			return;
 		}
+		const data = await response.json();
 		return data;
 	} catch (error) {
 		console.error(error);
@@ -117,11 +120,11 @@ export async function getUserPosts(userId: number) {
 		const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL + "/api/v1/post/user/" + userId, {
 			headers: { "Content-Type": "application/json" },
 		});
-		const data = await response.json();
 		if (!response.ok) {
 			alert("Error getting user's post");
 			return;
 		}
+		const data = await response.json();
 		return data;
 	} catch (error) {
 		console.error(error);
@@ -155,11 +158,11 @@ export async function getPostComments(postId: number) {
 		const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL}/api/v1/post/${postId}/comments`, {
 			headers: { "Content-Type": "application/json" },
 		});
-		const data = await response.json();
 		if (!response.ok) {
 			alert("Error getting post comments");
 			return;
 		}
+		const data = await response.json();
 		return data;
 	} catch (error) {
 		console.error(error);
@@ -199,7 +202,9 @@ export async function toggleFollow(postId: number, userId: number) {
 			}
 		);
 		if (!response.ok) {
-			alert("Error when user toggle like in post");
+			const errorText = await response.text();
+			console.error("Error when user toggle follow in post: " + errorText);
+			alert("Error when user toggle follow in post");
 		}
 	} catch (error) {
 		console.error(error);
@@ -213,7 +218,7 @@ export async function deletePost(postId: number) {
 			headers: { "Content-Type": "application/json" },
 		});
 		if (!response.ok) {
-			alert("Error when user toggle like in post");
+			alert("Error when user delete the post");
 		}
 	} catch (error) {
 		console.error(error);
@@ -223,7 +228,7 @@ export async function deletePost(postId: number) {
 export async function addPostDay(postId: number, postDay: IDayToAdd) {
 	try {
 		const imageUrl = await getImageUrl(postDay.image);
-		const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL}/api/v1/post/day`, {
+		const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL}/api/v1/post-day/add`, {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({
@@ -238,6 +243,10 @@ export async function addPostDay(postId: number, postDay: IDayToAdd) {
 		if(response.status === 400) {
 			const errorText = await response.text();
 			return { status: response.status, message: errorText };
+		} else if(!response.ok) {
+			const errorText = await response.text();
+			console.error("Error adding new post day: " + errorText);
+			alert("Error adding new post day");
 		}
 	} catch (error) {
 		console.error(error);
@@ -250,11 +259,11 @@ export async function getDayListOfPost(postId: number) {
 		const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL}/api/v1/post-day/day-list/${postId}`, {
 			headers: { "Content-Type": "application/json" },
 		});
-		const data = await response.json();
 		if (!response.ok) {
-			alert("Error getting post comments");
+			alert("Error day list of a post");
 			return;
 		}
+		const data = await response.json();
 		return data;
 	} catch (error) {
 		console.error(error);
@@ -263,7 +272,7 @@ export async function getDayListOfPost(postId: number) {
 
 export async function updatePostDay(postId: number, postDay: IDayToUpdate) {
 	try {
-		await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL}/api/v1/post/${postId}/day`, {
+		await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL}/api/v1/post-day/post/${postId}`, {
 			method: "PUT",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({

@@ -147,7 +147,7 @@ function Post({
 				</div>
 			</div>
 			<div className="ml-10">
-				<p className="text-sm">
+				<p className="text-sm whitespace-pre-line">
 					<span className="font-bold">Dia {postWithUserName.postDays[0].day}: </span>
 					{postWithUserName.postDays[0].content}
 				</p>
