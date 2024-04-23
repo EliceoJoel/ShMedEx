@@ -34,7 +34,7 @@ function PostModal({ postAction, setPostWithUserName, setPostDays }: IPostModalP
 			setValue("postDay", postAction.postDay.day);
 			setValue("post", postAction.postDay.content);
 		}
-	}, [postAction]);
+	}, [postAction, setValue]);
 
 	const handlePublish = handleSubmit(async (data) => {
 		// loading started
@@ -42,12 +42,12 @@ function PostModal({ postAction, setPostWithUserName, setPostDays }: IPostModalP
 
 		if (postAction !== null) {
 			switch (postAction.action) {
-				case UserPostActions.ADD_POST_DAY:
-					await handleAddPostDay(data);
-					break;
-				case UserPostActions.EDIT_POST_DAY:
-					await handleEditPostDay(data);
-					break;
+			case UserPostActions.ADD_POST_DAY:
+				await handleAddPostDay(data);
+				break;
+			case UserPostActions.EDIT_POST_DAY:
+				await handleEditPostDay(data);
+				break;
 			}
 		} else if (loggedUser !== null) {
 			// Create a post
@@ -58,7 +58,7 @@ function PostModal({ postAction, setPostWithUserName, setPostDays }: IPostModalP
 			// Loading finished
 			setIsisPublishing(false);
 			// Close modal
-			document.getElementById("postModal")?.close();
+			(document.getElementById("postModal") as HTMLDialogElement)?.close();
 		}
 	});
 
@@ -83,7 +83,7 @@ function PostModal({ postAction, setPostWithUserName, setPostDays }: IPostModalP
 		// Clear fields
 		reset();
 		// Close modal
-		document.getElementById("postModal")?.close();
+		(document.getElementById("postModal") as HTMLDialogElement)?.close();
 	};
 
 	const handleEditPostDay = async (data: NewPost) => {
@@ -106,7 +106,7 @@ function PostModal({ postAction, setPostWithUserName, setPostDays }: IPostModalP
 			// Clear fields
 			reset();
 			// Close modal
-			document.getElementById("postModal")?.close();
+			(document.getElementById("postModal") as HTMLDialogElement)?.close();
 		}
 	};
 
@@ -186,7 +186,7 @@ function PostModal({ postAction, setPostWithUserName, setPostDays }: IPostModalP
 							className="btn"
 							type="button"
 							onClick={() => {
-								document.getElementById("postModal")?.close();
+								(document.getElementById("postModal") as HTMLDialogElement)?.close();
 								reset();
 								closePostActionsDropdown();
 							}}

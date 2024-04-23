@@ -63,13 +63,13 @@ function Navbar({ currentExpPage, setCurrentExpPage }: INavBarProps) {
 			<div className="navbar-end gap-2">
 				<button
 					className="btn btn-primary btn-circle md:hidden"
-					onClick={() => document.getElementById("postModal")?.showModal()}
+					onClick={() => (document.getElementById("postModal") as HTMLDialogElement)?.showModal()}
 				>
 					<AiOutlinePlus className="h-6 w-6" />
 				</button>
 				<button
 					className="btn btn-primary normal-case hidden md:inline-flex"
-					onClick={() => document.getElementById("postModal")?.showModal()}
+					onClick={() => (document.getElementById("postModal") as HTMLDialogElement)?.showModal()}
 				>
 					<AiOutlinePlus className="h-6 w-6" /> Contar experiencia
 				</button>

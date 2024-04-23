@@ -56,7 +56,7 @@ function Experiences() {
 				}
 			}
 		}
-	}, [currentExpPage, user]);
+	}, [currentExpPage, router, searchParams, user]);
 
 	return (
 		<div>

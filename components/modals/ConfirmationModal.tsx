@@ -13,7 +13,7 @@ function ConfirmationModal({ confirmationText, yesAction, cancelAction }: IConfi
 						className="btn"
 						onClick={() => {
 							cancelAction();
-							document.getElementById("confirmationModal")?.close();
+							(document.getElementById("confirmationModal") as HTMLDialogElement)?.close();
 						}}
 					>
 						Cancelar
@@ -22,7 +22,7 @@ function ConfirmationModal({ confirmationText, yesAction, cancelAction }: IConfi
 						className="btn btn-primary"
 						onClick={() => {
 							yesAction();
-							document.getElementById("confirmationModal")?.close();
+							(document.getElementById("confirmationModal") as HTMLDialogElement)?.close();
 						}}
 					>
 						Confirmar

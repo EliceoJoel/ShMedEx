@@ -41,7 +41,7 @@ function Post({
 			const postDay = getPostDayByDayNumber(selectedDay);
 			if (postDay !== undefined) {
 				setPostAction({ postDay: postDay, action: postAction });
-				document.getElementById("postModal")?.showModal();
+				(document.getElementById("postModal") as HTMLDialogElement)?.showModal();
 			}
 		}
 	};
@@ -50,7 +50,7 @@ function Post({
 		if (setPostDayToRemove !== null && setPostToRemove !== null) {
 			setPostDayToRemove(null);
 			setPostToRemove(postWithUserName);
-			document.getElementById("confirmationModal")?.showModal();
+			(document.getElementById("confirmationModal") as HTMLDialogElement)?.showModal();
 		}
 	};
 
@@ -60,7 +60,7 @@ function Post({
 			if (postDay !== undefined) {
 				setPostDayToRemove(postDay);
 				setPostToRemove(null);
-				document.getElementById("confirmationModal")?.showModal();
+				(document.getElementById("confirmationModal") as HTMLDialogElement)?.showModal();
 			}
 		}
 	};

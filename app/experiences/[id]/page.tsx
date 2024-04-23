@@ -40,7 +40,7 @@ function SpecificPost({ params }: { params: { id: string } }) {
 		} else {
 			router.push("/signin");
 		}
-	}, []);
+	}, [params.id, router, user]);
 
 	const removePostDayAction = async () => {
 		if (postDayToRemove !== null && user !== null) {
