@@ -32,7 +32,7 @@ function Profile() {
 		} else {
 			getMyPostsData(user.id);
 		}
-	}, []);
+	}, [router, user]);
 
 	return (
 		<div>

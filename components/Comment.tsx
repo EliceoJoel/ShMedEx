@@ -1,5 +1,3 @@
-import Image from "next/image";
-import avatarImage from "@/public/avatar.jpg";
 import { ICommentProps } from "@/interfaces/objects";
 import { formatDate } from "@/utils/all";
 

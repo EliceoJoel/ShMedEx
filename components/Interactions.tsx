@@ -83,7 +83,7 @@ function Interactions({
 
 	const handleComment = () => {
 		setPostId(postId);
-		document.getElementById("newCommentModal")?.showModal();
+		(document.getElementById("newCommentModal") as HTMLDialogElement)?.showModal();
 	};
 
 	return (

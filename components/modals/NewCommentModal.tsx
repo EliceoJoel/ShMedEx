@@ -40,7 +40,7 @@ function NewCommentModal({ setPostComments }: INewCommentModalProps) {
 			setisAddingAComment(false);
 
 			// Close new comment modal
-			document.getElementById("newCommentModal")?.close();
+			(document.getElementById("newCommentModal") as HTMLDialogElement)?.close();
 
 			// Show sucess toast
 			toast.success("Comentario agregado exitosamente!");
@@ -91,7 +91,7 @@ function NewCommentModal({ setPostComments }: INewCommentModalProps) {
 						<button
 							className="btn"
 							type="button"
-							onClick={() => document.getElementById("newCommentModal")?.close()}
+							onClick={() => (document.getElementById("newCommentModal") as HTMLDialogElement)?.close()}
 						>
 							Cerrar
 						</button>
