@@ -102,6 +102,8 @@ function PostModal({ postAction, setPostWithUserName, setPostDays }: IPostModalP
 				setPostWithUserName(postData);
 			}
 			closePostActionsDropdown();
+			// Loading finished
+			setIsisPublishing(false);
 			toast.success(`La experiencia del dia ${postAction?.postDay.day} fue actualizada exitosamente!`);
 			// Clear fields
 			reset();
